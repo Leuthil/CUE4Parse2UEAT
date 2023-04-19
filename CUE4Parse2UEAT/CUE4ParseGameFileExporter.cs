@@ -1,6 +1,6 @@
 ﻿using CUE4Parse.UE4.Assets;
 using CUE4Parse_Conversion.Textures;
-using CUE4Parse2UEAT.Factories.CUE4P;
+using CUE4Parse2UEAT.Factory;
 using SkiaSharp;
 
 namespace CUE4Parse2UEAT

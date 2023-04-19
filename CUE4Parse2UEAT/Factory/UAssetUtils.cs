@@ -3,7 +3,7 @@ using CUE4Parse.Utils;
 using UEATSerializer.UEAT;
 using UObject = CUE4Parse.UE4.Assets.Exports.UObject;
 
-namespace CUE4Parse2UEAT.Factories.CUE4P
+namespace CUE4Parse2UEAT.Factory
 {
     public static class UAssetUtils
     {
@@ -20,7 +20,7 @@ namespace CUE4Parse2UEAT.Factories.CUE4P
             uasset.UObjectAsset = UObjectUtils.CreateUObject(assetObject, assetPackage);
 
             uasset.ImportPackageObjects = assetPackage.ImportMap.Select(i => PackageObjectUtils.CreatePackageObject(i, assetPackage));
-            uasset.ExportPackageObjects = assetPackage.ExportMap.Select(e =>  PackageObjectUtils.CreatePackageObject(e, assetPackage));
+            uasset.ExportPackageObjects = assetPackage.ExportMap.Select(e => PackageObjectUtils.CreatePackageObject(e, assetPackage));
 
             return uasset;
         }

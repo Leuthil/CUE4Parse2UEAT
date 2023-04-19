@@ -3,7 +3,7 @@ using CUE4Parse.UE4.Assets.Objects;
 using CUE4Parse.UE4.Objects.Core.Misc;
 using UEATSerializer.UEAT;
 
-namespace CUE4Parse2UEAT.Factories.CUE4P
+namespace CUE4Parse2UEAT.Factory
 {
     public static class FPropertyValueUtils
     {

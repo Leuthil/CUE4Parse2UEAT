@@ -1,6 +1,6 @@
 ﻿using CUE4Parse.UE4.Assets;
 
-namespace CUE4Parse2UEAT.Factories.CUE4P
+namespace CUE4Parse2UEAT.Factory
 {
     public static class FPropertyUtils
     {
