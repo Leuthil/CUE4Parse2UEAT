@@ -2,10 +2,10 @@
 
 namespace CUE4Parse2UEAT.Factory
 {
-    public static class UBlueprintClassUtils
+    public static class UBlueprintUtils
     {
         public static void PopulateUBlueprintClassData(CUE4Parse.UE4.Objects.Engine.UBlueprintGeneratedClass cue4ParseUBlueprintGenClass,
-            UEATSerializer.UEAT.UBlueprintClass ueatUBlueprintClass, IoPackage package)
+            UEATSerializer.UEAT.UBlueprint ueatUBlueprintClass, IoPackage package)
         {
             // GeneratedVariableNames (string[])
             // (Composed of variables from: SimpleConstructionScript.GetAllNodes.GetVariableName, Timelines.GetVariableName,

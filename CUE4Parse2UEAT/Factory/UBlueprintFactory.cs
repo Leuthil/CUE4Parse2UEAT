@@ -2,7 +2,7 @@
 
 namespace CUE4Parse2UEAT.Factory
 {
-    public class UBlueprintClassFactory : IUObjectFactory
+    public class UBlueprintFactory : IUObjectFactory
     {
         public int Priority => 0;
 
@@ -20,12 +20,12 @@ namespace CUE4Parse2UEAT.Factory
                 return null;
             }
 
-            UEATSerializer.UEAT.UBlueprintClass blueprintClass = new UEATSerializer.UEAT.UBlueprintClass();
+            UEATSerializer.UEAT.UBlueprint blueprintClass = new UEATSerializer.UEAT.UBlueprint();
 
             UObjectUtils.PopulateUObjectData(blueprintGenClass, blueprintClass, package);
             UStructUtils.PopulateUStructData(blueprintGenClass, blueprintClass, package);
             UClassUtils.PopulateUClassData(blueprintGenClass, blueprintClass, package);
-            UBlueprintClassUtils.PopulateUBlueprintClassData(blueprintGenClass, blueprintClass, package);
+            UBlueprintUtils.PopulateUBlueprintClassData(blueprintGenClass, blueprintClass, package);
 
             return blueprintClass;
         }

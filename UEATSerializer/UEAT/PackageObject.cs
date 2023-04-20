@@ -41,8 +41,12 @@ namespace UEATSerializer.UEAT
             writer.WriteValue(ClassName);
             writer.WritePropertyName("ObjectName");
             writer.WriteValue(ObjectName);
-            writer.WritePropertyName("Outer");
-            writer.WriteValue(objectHierarchy.GetObjectIndex(Outer?.Id));
+
+            if (Outer != null)
+            {
+                writer.WritePropertyName("Outer");
+                writer.WriteValue(objectHierarchy.GetObjectIndex(Outer?.Id));
+            }
         }
     }
 
@@ -91,8 +95,13 @@ namespace UEATSerializer.UEAT
 
             writer.WritePropertyName("ObjectClass");
             writer.WriteValue(objectHierarchy.GetObjectIndex(ObjectClass?.Id));
-            writer.WritePropertyName("Outer");
-            writer.WriteValue(objectHierarchy.GetObjectIndex(Outer?.Id));
+
+            if (Outer != null)
+            {
+                writer.WritePropertyName("Outer");
+                writer.WriteValue(objectHierarchy.GetObjectIndex(Outer?.Id));
+            } 
+
             writer.WritePropertyName("ObjectName");
             writer.WriteValue(ObjectName);
             writer.WritePropertyName("ObjectFlags");

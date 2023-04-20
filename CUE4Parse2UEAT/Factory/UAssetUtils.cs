@@ -9,14 +9,12 @@ namespace CUE4Parse2UEAT.Factory
     {
         public static UAsset CreateUAsset(IoPackage assetPackage)
         {
-            var exports = assetPackage.GetExports();
-
             var assetObject = FindAssetObject(assetPackage);
 
             var uasset = new UAsset();
             uasset.PackageName = assetPackage.Name;
             uasset.ObjectName = assetPackage.Name.SubstringAfterLast('/');
-            uasset.ClassName = assetObject.Class.ToString();
+            uasset.ClassName = GetAssetClassName(assetObject);
             uasset.UObjectAsset = UObjectUtils.CreateUObject(assetObject, assetPackage);
 
             uasset.ImportPackageObjects = assetPackage.ImportMap.Select(i => PackageObjectUtils.CreatePackageObject(i, assetPackage));
@@ -36,6 +34,28 @@ namespace CUE4Parse2UEAT.Factory
             }
 
             return uobject;
+        }
+
+        private static readonly Dictionary<string, string> _cookedClassNameToAssetClassName = new Dictionary<string, string>()
+        {
+            { "BlueprintGeneratedClass", "Blueprint" }
+        };
+
+        public static string GetAssetClassName(UObject uobject)
+        {
+            string? className = uobject?.Class?.Name;
+
+            if (className == null)
+            {
+                return string.Empty;
+            }
+
+            if (_cookedClassNameToAssetClassName.TryGetValue(className, out string? assetClassName))
+            {
+                return assetClassName ?? string.Empty;
+            }
+
+            return className;
         }
     }
 }

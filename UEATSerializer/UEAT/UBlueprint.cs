@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace UEATSerializer.UEAT
 {
-    public class UBlueprintClass : UClass
+    public class UBlueprint : UClass
     {
         // (Composed of variables from: SimpleConstructionScript.GetAllNodes.GetVariableName, Timelines.GetVariableName,
         //                              Timelines.GetDirectionPropertyName, Timelines.FlaotTracks, Timelines.VectorTracks,
