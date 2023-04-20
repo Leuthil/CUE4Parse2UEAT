@@ -6,7 +6,7 @@ namespace CUE4Parse2UEAT.Factory
     {
         public readonly static List<IUObjectFactory> UObjectFactories = new List<IUObjectFactory>()
         {
-            new UBlueprintClassFactory(),
+            new UBlueprintFactory(),
         };
 
         public static UEATSerializer.UEAT.UObject? CreateUObject(CUE4Parse.UE4.Assets.Exports.UObject? assetObject, IoPackage package)
