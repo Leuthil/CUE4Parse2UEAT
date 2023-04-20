@@ -57,6 +57,12 @@ namespace CUE4Parse2UEAT.Factory
                 className = objectName.Substring("Default__".Length);
             }
 
+            // class
+            if ("Class".Equals(className))
+            {
+                classPackage = "/Script/CoreUObject";
+            }
+
             // packages
             // if Outer is null then this is a package
             if (resolvedObject.Outer == null)
