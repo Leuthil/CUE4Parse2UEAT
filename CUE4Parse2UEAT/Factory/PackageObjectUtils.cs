@@ -57,10 +57,31 @@ namespace CUE4Parse2UEAT.Factory
                 className = objectName.Substring("Default__".Length);
             }
 
-            // class
+            // class (should this be combined with the above fixup for CDOs?)
             if ("Class".Equals(className))
             {
                 classPackage = "/Script/CoreUObject";
+
+                // workaround because CUE4Parse cannot differentiate between UScriptStruct and UClass, so everything is classified as "Class"
+                // see code comment within CUE4Parse.UE4.Assets.ResolvedScriptObject
+                if (package?.Provider?.MappingsForGame != null
+                    && package.Provider.MappingsForGame.Types.TryGetValue(objectName, out var type))
+                {
+                    var superType = type;
+
+                    while (superType?.Super.Value != null)
+                    {
+                        superType = superType.Super.Value;
+                    }
+
+                    // no idea if this is a legit check, but it seems to work so far
+                    bool isStruct = !("Object".Equals(superType.Name));
+                    if (isStruct)
+                    {
+                        className = "ScriptStruct";
+                    }
+                }
+
             }
 
             // packages

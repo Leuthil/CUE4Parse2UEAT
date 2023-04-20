@@ -9,6 +9,7 @@ namespace CUE4Parse2UEAT_CLI
             string gameDirectory = @"C:\Games\Steam\SteamApps\common\Hogwarts Legacy\Phoenix";
             string exportDirectory = @"F:\Repos\HogwartsModding\TestDump";
 
+            // CUE4ParseGameFileProvider is hard-coded for Hogwarts Legacy
             var provider = new CUE4ParseGameFileProvider(gameDirectory);
             var exporter = new CUE4ParseGameFileExporter(provider);
             exporter.Initialize(new ExporterConfig.Builder().SetExportDirectory(exportDirectory).Build());

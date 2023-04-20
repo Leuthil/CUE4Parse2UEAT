@@ -1,4 +1,5 @@
 ﻿using CUE4Parse.FileProvider;
+using CUE4Parse.MappingsProvider;
 using CUE4Parse.UE4.Assets;
 using CUE4Parse.UE4.Objects.Core.Misc;
 using CUE4Parse.UE4.Versions;
@@ -55,6 +56,10 @@ namespace CUE4Parse2UEAT
             var cue4ParseProvider = new DefaultFileProvider(gameFileDirectory, SearchOption.AllDirectories, false, versions);
             cue4ParseProvider.Initialize();
             cue4ParseProvider.SubmitKey(new FGuid(), new CUE4Parse.Encryption.Aes.FAesKey("0000000000000000000000000000000000000000000000000000000000000000"));
+
+            // .usmap generated with UE4SS 2.5.1
+            string mappingsFilePath = Path.Combine(gameFileDirectory, "Content", "Paks", "Mappings.usmap");
+            cue4ParseProvider.MappingsContainer = new FileUsmapTypeMappingsProvider(mappingsFilePath);
 
             Provider = cue4ParseProvider;
         }
