@@ -123,6 +123,9 @@ namespace UEATSerializer.UEAT
             writer.WritePropertyName("$ReferencedObjects");
             writer.WriteStartArray();
 
+            // remove -1 entry if exists
+            referencedObjects.Remove(-1);
+
             foreach (int referencedPackageObjectIndex in referencedObjects)
             {
                 writer.WriteValue(referencedPackageObjectIndex);

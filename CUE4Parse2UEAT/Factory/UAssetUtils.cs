@@ -10,15 +10,16 @@ namespace CUE4Parse2UEAT.Factory
         public static UAsset CreateUAsset(IoPackage assetPackage)
         {
             var assetObject = FindAssetObject(assetPackage);
+            var context = new GenerationContext(assetPackage, assetObject);
 
             var uasset = new UAsset();
             uasset.PackageName = assetPackage.Name;
             uasset.ObjectName = assetPackage.Name.SubstringAfterLast('/');
             uasset.ClassName = GetAssetClassName(assetObject);
-            uasset.UObjectAsset = UObjectUtils.CreateUObject(assetObject, assetPackage);
+            uasset.UObjectAsset = UObjectUtils.CreateUObject(assetObject, context);
 
-            uasset.ImportPackageObjects = assetPackage.ImportMap.Select(i => PackageObjectUtils.CreatePackageObject(i, assetPackage));
-            uasset.ExportPackageObjects = assetPackage.ExportMap.Select(e => PackageObjectUtils.CreatePackageObject(e, assetPackage));
+            uasset.ImportPackageObjects = assetPackage.ImportMap.Select(i => PackageObjectUtils.CreatePackageObject(i, context));
+            uasset.ExportPackageObjects = assetPackage.ExportMap.Select(e => PackageObjectUtils.CreatePackageObject(e, context));
 
             return uasset;
         }

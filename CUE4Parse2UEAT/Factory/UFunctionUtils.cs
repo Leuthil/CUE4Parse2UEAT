@@ -1,10 +1,8 @@
-﻿using CUE4Parse.UE4.Assets;
-
-namespace CUE4Parse2UEAT.Factory
+﻿namespace CUE4Parse2UEAT.Factory
 {
     public static class UFunctionUtils
     {
-        public static UEATSerializer.UEAT.UFunction? CreateUFunction(CUE4Parse.UE4.Objects.UObject.UFunction func, IoPackage package)
+        public static UEATSerializer.UEAT.UFunction? CreateUFunction(CUE4Parse.UE4.Objects.UObject.UFunction func, GenerationContext context)
         {
             if (func == null)
             {
@@ -13,8 +11,8 @@ namespace CUE4Parse2UEAT.Factory
 
             var ufunction = new UEATSerializer.UEAT.UFunction();
 
-            UObjectUtils.PopulateUObjectData(func, ufunction, package);
-            UStructUtils.PopulateUStructData(func, ufunction, package);
+            UObjectUtils.PopulateUObjectData(func, ufunction, context);
+            UStructUtils.PopulateUStructData(func, ufunction, context);
 
             ufunction.FunctionFlags = func.FunctionFlags.ToString();
             ufunction.EventGraphFunction = func.EventGraphFunction.Name;

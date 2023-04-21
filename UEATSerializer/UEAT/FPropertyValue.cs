@@ -333,4 +333,14 @@ namespace UEATSerializer.UEAT
             writer.WriteValue("##NOT SERIALIZED##");
         }
     }
+
+    public class UnsupportedPropertyValue : FPropertyValue
+    {
+        public Dictionary<string, string> Data = new Dictionary<string, string>();
+
+        public override void WriteJson(JsonWriter writer, JsonSerializer serializer, PackageObjectHierarchy objectHierarchy)
+        {
+            writer.WriteValue("##NOT SERIALIZED##");
+        }
+    }
 }

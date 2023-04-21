@@ -7,19 +7,19 @@ namespace CUE4Parse2UEAT.Factory
 {
     public static class PackageObjectUtils
     {
-        public static PackageObject? CreatePackageObject(FPackageObjectIndex? packageObjectIndex, IoPackage package)
+        public static PackageObject? CreatePackageObject(FPackageObjectIndex? packageObjectIndex, GenerationContext context)
         {
             if (packageObjectIndex == null || packageObjectIndex.Value.IsNull)
             {
                 return null;
             }
 
-            var resolvedObject = package.ResolveObjectIndex(packageObjectIndex.Value);
+            var resolvedObject = context.Package.ResolveObjectIndex(packageObjectIndex.Value);
 
-            return CreatePackageObject(resolvedObject, package);
+            return CreatePackageObject(resolvedObject, context);
         }
 
-        public static PackageObject? CreatePackageObject(ResolvedObject? resolvedObject, IoPackage package)
+        public static PackageObject? CreatePackageObject(ResolvedObject? resolvedObject, GenerationContext context)
         {
             if (resolvedObject == null)
             {
@@ -30,16 +30,26 @@ namespace CUE4Parse2UEAT.Factory
             var objectPackage = GetPackage(resolvedObject);
             var packageName = objectPackage?.Name.Text;
 
-            // import
-            if (!package.Name.Equals(packageName))
+            if (context.ContainsPackageObject(new UObjectIdentifier(packageName, objectName)))
             {
-                return CreateImportPackageObject(packageName, objectName, resolvedObject, package);
+                return context.GetPackageObject(new UObjectIdentifier(packageName, objectName));
             }
 
-            return CreateExportPackageObject(packageName, objectName, resolvedObject.Class, resolvedObject.Outer, (int)resolvedObject.Object.Value.Flags, package);
+            // import
+            if (!context.Package.Name.Equals(packageName))
+            {
+                return CreateImportPackageObject(packageName, objectName, resolvedObject, context);
+            }
+
+            if (!resolvedObject.TryLoad(out var exportObject))
+            {
+                return null;
+            }
+
+            return CreateExportPackageObject(exportObject, resolvedObject.Class, resolvedObject.Outer, (int)resolvedObject.Object.Value.Flags, context);
         }
 
-        private static PackageObject CreateImportPackageObject(string? packageName, string objectName, ResolvedObject? resolvedObject, IoPackage package)
+        private static PackageObject CreateImportPackageObject(string? packageName, string objectName, ResolvedObject? resolvedObject, GenerationContext context)
         {
             var classPackage = resolvedObject.Class?.Outer?.Name.Text;
             var className = resolvedObject.Class?.Name.Text;
@@ -64,8 +74,8 @@ namespace CUE4Parse2UEAT.Factory
 
                 // workaround because CUE4Parse cannot differentiate between UScriptStruct and UClass, so everything is classified as "Class"
                 // see code comment within CUE4Parse.UE4.Assets.ResolvedScriptObject
-                if (package?.Provider?.MappingsForGame != null
-                    && package.Provider.MappingsForGame.Types.TryGetValue(objectName, out var type))
+                if (context.Package?.Provider?.MappingsForGame != null
+                    && context.Package.Provider.MappingsForGame.Types.TryGetValue(objectName, out var type))
                 {
                     var superType = type;
 
@@ -95,31 +105,52 @@ namespace CUE4Parse2UEAT.Factory
             var import = new ImportPackageObject();
             import.PackageName = packageName;
             import.ObjectName = objectName;
+
+            // add before resolving any other objects
+            context.AddPackageObject(import);
+
             import.ClassPackage = classPackage;
             import.ClassName = className;
-            import.Outer = CreatePackageObject(resolvedObject?.Outer, package);
+            import.Outer = CreatePackageObject(resolvedObject?.Outer, context);
 
             return import;
         }
 
-        public static PackageObject? CreatePackageObject(FExportMapEntry exportMapEntry, IoPackage package)
+        public static PackageObject? CreatePackageObject(FExportMapEntry exportMapEntry, GenerationContext context)
         {
-            var classObject = package.ResolveObjectIndex(exportMapEntry.ClassIndex);
-            var outerObject = package.ResolveObjectIndex(exportMapEntry.OuterIndex);
-            var objectName = CreateFNameFromMappedName(exportMapEntry.ObjectName, package.GlobalData.GlobalNameMap, package.NameMap).Text;
-            var packageName = package.Name;
+            var objectName = CreateFNameFromMappedName(exportMapEntry.ObjectName, context.Package.GlobalData.GlobalNameMap, context.Package.NameMap).Text;
+            var packageName = context.Package.Name;
 
-            return CreateExportPackageObject(packageName, objectName, classObject, outerObject, (int)exportMapEntry.ObjectFlags, package);
+            if (context.ContainsPackageObject(new UObjectIdentifier(packageName, objectName)))
+            {
+                return context.GetPackageObject(new UObjectIdentifier(packageName, objectName));
+            }
+
+            var exportObject = context.Package.GetExport(objectName);
+            var classObject = context.Package.ResolveObjectIndex(exportMapEntry.ClassIndex);
+            var outerObject = context.Package.ResolveObjectIndex(exportMapEntry.OuterIndex);
+
+            return CreateExportPackageObject(exportObject, classObject, outerObject, (int)exportMapEntry.ObjectFlags, context);
         }
 
-        public static ExportPackageObject CreateExportPackageObject(string packageName, string objectName, ResolvedObject? objectClass, ResolvedObject? outer, int objectFlags, IoPackage package)
+        public static ExportPackageObject CreateExportPackageObject(CUE4Parse.UE4.Assets.Exports.UObject exportObject, ResolvedObject? objectClass,
+            ResolvedObject? outer, int objectFlags, GenerationContext context)
         {
             var export = new ExportPackageObject();
-            export.PackageName = packageName;
-            export.ObjectName = objectName;
-            export.ObjectClass = CreatePackageObject(objectClass, package);
+
+            // set this early so the UObjectIdentifier is valid before adding to the context
+            export.PackageName = exportObject.Owner?.Name;
+            export.ObjectName = exportObject.Name;
+
+            // add before resolving any other objects
+            context.AddPackageObject(export);
+
+            UObjectUtils.PopulateUObjectData(exportObject, export, context);
+
+            export.ObjectClass = CreatePackageObject(objectClass, context);
             export.ObjectFlags = objectFlags;
-            export.Outer = CreatePackageObject(outer, package);
+            export.Outer = CreatePackageObject(outer, context);
+
             return export;
         }
 
