@@ -3,7 +3,7 @@ using CUE4Parse.Utils;
 using UEATSerializer.UEAT;
 using UObject = CUE4Parse.UE4.Assets.Exports.UObject;
 
-namespace CUE4Parse2UEAT.Factory
+namespace CUE4Parse2UEAT.Generation
 {
     public static class UAssetUtils
     {
@@ -39,7 +39,9 @@ namespace CUE4Parse2UEAT.Factory
 
         private static readonly Dictionary<string, string> _cookedClassNameToAssetClassName = new Dictionary<string, string>()
         {
-            { "BlueprintGeneratedClass", "Blueprint" }
+            { "BlueprintGeneratedClass", "Blueprint" },
+            { "WidgetBlueprintGeneratedClass", "WidgetBlueprint" },
+            { "AnimBlueprintGeneratedClass" , "AnimBlueprint"},
         };
 
         public static string GetAssetClassName(UObject uobject)

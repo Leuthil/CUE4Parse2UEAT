@@ -1,5 +1,5 @@
-﻿using UEATSerializer.Serializer;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using UEATSerializer.Serializer;
 
 namespace UEATSerializer.UEAT
 {
@@ -12,7 +12,7 @@ namespace UEATSerializer.UEAT
         public virtual int[] ResolveObjectReferences(PackageObjectHierarchy objectHierarchy)
         {
             HashSet<int> referencedObjects = new HashSet<int>();
-            
+
             referencedObjects.Add(objectHierarchy.AddUnique(Class));
 
             if (Class != null)

@@ -1,4 +1,4 @@
-﻿namespace CUE4Parse2UEAT.Factory
+﻿namespace CUE4Parse2UEAT.Generation
 {
     public static class UStructUtils
     {
@@ -43,7 +43,7 @@
                     continue;
                 }
 
-                ueatUStruct.ChildProperties.Add(fprop.Name.Text, fproperty);
+                ueatUStruct.ChildProperties.Add(KeyValuePair.Create(fprop.Name.Text, fproperty));
             }
 
             // (requires bytecode disassembly, not sure if available) (BytecodeDisassembler.SerializeFunction(struct))

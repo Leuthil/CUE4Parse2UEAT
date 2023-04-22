@@ -1,5 +1,5 @@
-﻿using UEATSerializer.Serializer;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using UEATSerializer.Serializer;
 
 namespace UEATSerializer.UEAT
 {
@@ -41,7 +41,7 @@ namespace UEATSerializer.UEAT
 
     public class FFallbackStructPropertyValue : FStructPropertyValue
     {
-        public Dictionary<string, FPropertyValue> Properties { get; set; } = new Dictionary<string, FPropertyValue>();
+        public List<KeyValuePair<string, FPropertyValue>> Properties { get; set; } = new List<KeyValuePair<string, FPropertyValue>>();
 
         public override int[] ResolveObjectReferences(PackageObjectHierarchy objectHierarchy)
         {

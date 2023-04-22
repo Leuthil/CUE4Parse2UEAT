@@ -1,5 +1,5 @@
-﻿using UEATSerializer.Serializer;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using UEATSerializer.Serializer;
 using UEATSerializer.UE;
 
 namespace UEATSerializer.UEAT

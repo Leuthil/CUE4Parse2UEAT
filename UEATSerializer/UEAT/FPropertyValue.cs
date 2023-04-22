@@ -1,5 +1,5 @@
-﻿using UEATSerializer.Serializer;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using UEATSerializer.Serializer;
 
 namespace UEATSerializer.UEAT
 {
@@ -12,7 +12,8 @@ namespace UEATSerializer.UEAT
 
         public abstract void WriteJson(JsonWriter writer, JsonSerializer serializer, PackageObjectHierarchy objectHierarchy);
 
-        public virtual void WriteJsonInlined(JsonWriter writer, JsonSerializer serializer, PackageObjectHierarchy objectHierarchy) { 
+        public virtual void WriteJsonInlined(JsonWriter writer, JsonSerializer serializer, PackageObjectHierarchy objectHierarchy)
+        {
             WriteJson(writer, serializer, objectHierarchy);
         }
     }
@@ -334,13 +335,17 @@ namespace UEATSerializer.UEAT
         }
     }
 
-    public class UnsupportedPropertyValue : FPropertyValue
+    /// <summary>
+    /// Writes JSON automatically with best effort. The provided value should not have object references or dependency stuff may break.
+    /// </summary>
+    // TODO: Give this a fancy name so it doesn't sound like a hack :)
+    public class GenericPropertyValue : FPropertyValue
     {
-        public Dictionary<string, string> Data = new Dictionary<string, string>();
+        public object? Value { get; set; } = null;
 
         public override void WriteJson(JsonWriter writer, JsonSerializer serializer, PackageObjectHierarchy objectHierarchy)
         {
-            writer.WriteValue("##NOT SERIALIZED##");
+            serializer.Serialize(writer, Value, null);
         }
     }
 }

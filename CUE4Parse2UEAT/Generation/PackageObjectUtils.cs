@@ -3,7 +3,7 @@ using CUE4Parse.UE4.IO.Objects;
 using CUE4Parse.UE4.Objects.UObject;
 using UEATSerializer.UEAT;
 
-namespace CUE4Parse2UEAT.Factory
+namespace CUE4Parse2UEAT.Generation
 {
     public static class PackageObjectUtils
     {
@@ -29,10 +29,11 @@ namespace CUE4Parse2UEAT.Factory
             var objectName = resolvedObject.Name.Text;
             var objectPackage = GetPackage(resolvedObject);
             var packageName = objectPackage?.Name.Text;
+            var objectId = new UObjectIdentifier(packageName, objectName);
 
-            if (context.ContainsPackageObject(new UObjectIdentifier(packageName, objectName)))
+            if (context.ContainsPackageObject(objectId))
             {
-                return context.GetPackageObject(new UObjectIdentifier(packageName, objectName));
+                return context.GetPackageObject(objectId);
             }
 
             // import
@@ -85,7 +86,7 @@ namespace CUE4Parse2UEAT.Factory
                     }
 
                     // no idea if this is a legit check, but it seems to work so far
-                    bool isStruct = !("Object".Equals(superType.Name));
+                    bool isStruct = !"Object".Equals(superType.Name);
                     if (isStruct)
                     {
                         className = "ScriptStruct";
@@ -120,10 +121,11 @@ namespace CUE4Parse2UEAT.Factory
         {
             var objectName = CreateFNameFromMappedName(exportMapEntry.ObjectName, context.Package.GlobalData.GlobalNameMap, context.Package.NameMap).Text;
             var packageName = context.Package.Name;
+            var objectId = new UObjectIdentifier(packageName, objectName);
 
-            if (context.ContainsPackageObject(new UObjectIdentifier(packageName, objectName)))
+            if (context.ContainsPackageObject(objectId))
             {
-                return context.GetPackageObject(new UObjectIdentifier(packageName, objectName));
+                return context.GetPackageObject(objectId);
             }
 
             var exportObject = context.Package.GetExport(objectName);

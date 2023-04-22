@@ -1,4 +1,4 @@
-﻿namespace CUE4Parse2UEAT.Factory
+﻿namespace CUE4Parse2UEAT.Generation
 {
     public static class UClassUtils
     {

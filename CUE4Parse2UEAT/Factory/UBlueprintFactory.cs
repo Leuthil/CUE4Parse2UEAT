@@ -1,4 +1,6 @@
-﻿namespace CUE4Parse2UEAT.Factory
+﻿using CUE4Parse2UEAT.Generation;
+
+namespace CUE4Parse2UEAT.Factory
 {
     public class UBlueprintFactory : IUObjectFactory
     {
@@ -18,14 +20,14 @@
                 return null;
             }
 
-            UEATSerializer.UEAT.UBlueprint blueprintClass = new UEATSerializer.UEAT.UBlueprint();
+            UEATSerializer.UEAT.UBlueprint blueprint = new UEATSerializer.UEAT.UBlueprint();
 
-            UObjectUtils.PopulateUObjectData(blueprintGenClass, blueprintClass, context);
-            UStructUtils.PopulateUStructData(blueprintGenClass, blueprintClass, context);
-            UClassUtils.PopulateUClassData(blueprintGenClass, blueprintClass, context);
-            UBlueprintUtils.PopulateUBlueprintClassData(blueprintGenClass, blueprintClass, context);
+            UObjectUtils.PopulateUObjectData(blueprintGenClass, blueprint, context);
+            UStructUtils.PopulateUStructData(blueprintGenClass, blueprint, context);
+            UClassUtils.PopulateUClassData(blueprintGenClass, blueprint, context);
+            UBlueprintUtils.PopulateUBlueprintData(blueprintGenClass, blueprint, context);
 
-            return blueprintClass;
+            return blueprint;
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using UEATSerializer.Serializer;
+﻿using Newtonsoft.Json;
+using UEATSerializer.Serializer;
 using UEATSerializer.UE;
-using Newtonsoft.Json;
 
 namespace UEATSerializer.UEAT
 {
@@ -15,7 +15,7 @@ namespace UEATSerializer.UEAT
         public PackageObject Outer { get; set; }
 
         [Obsolete("Should not be used for imports")]
-        public new Dictionary<string, FPropertyValue> Properties { get; set; } = new Dictionary<string, FPropertyValue>();
+        public new List<KeyValuePair<string, FPropertyValue>> Properties { get; set; } = new List<KeyValuePair<string, FPropertyValue>>();
 
         public override int[] ResolveObjectReferences(PackageObjectHierarchy objectHierarchy)
         {
@@ -100,7 +100,7 @@ namespace UEATSerializer.UEAT
             {
                 writer.WritePropertyName("Outer");
                 writer.WriteValue(objectHierarchy.GetObjectIndex(Outer?.Id));
-            } 
+            }
 
             writer.WritePropertyName("ObjectName");
             writer.WriteValue(ObjectName);

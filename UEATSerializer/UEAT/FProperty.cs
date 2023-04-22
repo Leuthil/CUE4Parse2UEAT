@@ -1,5 +1,5 @@
-﻿using UEATSerializer.Serializer;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using UEATSerializer.Serializer;
 using UEATSerializer.UE;
 
 namespace UEATSerializer.UEAT
@@ -158,7 +158,7 @@ namespace UEATSerializer.UEAT
     }
 
     // Enum for legacy enum properties (TByteAsEnum)
-    public class FByteProperty : FProperty
+    public class FByteProperty : FNumericProperty
     {
         // ByteProperty->Enum (UEnum)
         public PackageObject Enum { get; set; }

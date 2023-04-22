@@ -2,7 +2,7 @@
 using CUE4Parse.UE4.Objects.Core.Misc;
 using UEATSerializer.UEAT;
 
-namespace CUE4Parse2UEAT.Factory
+namespace CUE4Parse2UEAT.Generation
 {
     public static class FPropertyValueUtils
     {
@@ -17,8 +17,6 @@ namespace CUE4Parse2UEAT.Factory
                         arrayProp.Items.Add(CreateFPropertyValue(property, context));
                     }
                     return arrayProp;
-                case AssetObjectProperty assetObjectProperty:
-                    break;
                 case BoolProperty boolProperty:
                     FBoolPropertyValue boolProp = new FBoolPropertyValue();
                     boolProp.Value = boolProperty.Value;
@@ -31,8 +29,6 @@ namespace CUE4Parse2UEAT.Factory
                     FObjectPropertyBaseValue objProp = new FObjectPropertyBaseValue();
                     objProp.Object = PackageObjectUtils.CreatePackageObject(classProperty.Value.ResolvedObject, context);
                     return objProp;
-                case DelegateProperty delegateProperty:
-                    break;
                 case DoubleProperty doubleProperty:
                     FNumericPropertyValue doubleProp = new FNumericPropertyValue();
                     doubleProp.DoubleValue = doubleProperty.Value;
@@ -70,8 +66,6 @@ namespace CUE4Parse2UEAT.Factory
                     interfaceProp.Object = PackageObjectUtils.CreatePackageObject(
                         context.Package.ResolvePackageIndex(interfaceProperty.Value.Object), context);
                     return interfaceProp;
-                case LazyObjectProperty lazyObjectProperty:
-                    break;
                 case MapProperty mapProperty:
                     FMapPropertyValue mapProp = new FMapPropertyValue();
                     foreach (var innerMapProperty in mapProperty.Value.Properties)
@@ -107,24 +101,6 @@ namespace CUE4Parse2UEAT.Factory
                     FStrPropertyValue strProp = new FStrPropertyValue();
                     strProp.Value = strProperty.Value;
                     return strProp;
-                case StructProperty structProperty:
-                    switch (structProperty.Value.StructType)
-                    {
-                        case FDateTime dateTimeStructProperty:
-                            FDateTimeStructPropertyValue dateTimeStructProp = new FDateTimeStructPropertyValue();
-                            dateTimeStructProp.Ticks = (ulong)dateTimeStructProperty.Ticks;
-                            return dateTimeStructProp;
-                        case FStructFallback fallbackStructProperty:
-                            FFallbackStructPropertyValue fallbackStructProp = new FFallbackStructPropertyValue();
-                            foreach (var fallbackStructInnerProperty in fallbackStructProperty.Properties)
-                            {
-                                fallbackStructProp.Properties.Add(
-                                    fallbackStructInnerProperty.Name.Text,
-                                    CreateFPropertyValue(fallbackStructInnerProperty.Tag, context));
-                            }
-                            return fallbackStructProp;
-                    }
-                    break;
                 case TextProperty textProperty:
                     FTextPropertyValue textProp = new FTextPropertyValue();
                     textProp.Value = textProperty.Value.Text;
@@ -141,11 +117,38 @@ namespace CUE4Parse2UEAT.Factory
                     FNumericPropertyValue uint64Prop = new FNumericPropertyValue();
                     uint64Prop.ULongValue = uint64Property.Value;
                     return uint64Prop;
+                case StructProperty structProperty:
+                    switch (structProperty.Value.StructType)
+                    {
+                        case FDateTime dateTimeStructProperty:
+                            FDateTimeStructPropertyValue dateTimeStructProp = new FDateTimeStructPropertyValue();
+                            dateTimeStructProp.Ticks = (ulong)dateTimeStructProperty.Ticks;
+                            return dateTimeStructProp;
+                        case FStructFallback fallbackStructProperty:
+                            FFallbackStructPropertyValue fallbackStructProp = new FFallbackStructPropertyValue();
+                            foreach (var fallbackStructInnerProperty in fallbackStructProperty.Properties)
+                            {
+                                fallbackStructProp.Properties.Add(KeyValuePair.Create(
+                                    fallbackStructInnerProperty.Name.Text,
+                                    CreateFPropertyValue(fallbackStructInnerProperty.Tag, context)));
+                            }
+                            return fallbackStructProp;
+                    }
+
+                    // TODO: UEATSerializer should have definitions of many (all?) F* struct types
+                    // handle automatically for now
+
+                    break;
+                case DelegateProperty delegateProperty:
+                case AssetObjectProperty assetObjectProperty:
+                case LazyObjectProperty lazyObjectProperty:
                 default:
                     break;
             }
 
-            return new UnsupportedPropertyValue();
+            var genericProp = new GenericPropertyValue();
+            genericProp.Value = propertyTagType;
+            return genericProp;
         }
     }
 }

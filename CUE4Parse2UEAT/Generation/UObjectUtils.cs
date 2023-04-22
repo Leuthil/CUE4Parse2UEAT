@@ -1,10 +1,15 @@
-﻿namespace CUE4Parse2UEAT.Factory
+﻿using CUE4Parse.UE4.Assets.Exports;
+using CUE4Parse.UE4.Assets.Objects;
+using CUE4Parse2UEAT.Factory;
+
+namespace CUE4Parse2UEAT.Generation
 {
     public static class UObjectUtils
     {
         public readonly static List<IUObjectFactory> UObjectFactories = new List<IUObjectFactory>()
         {
             new UBlueprintFactory(),
+            new UWidgetBlueprintFactory(),
         };
 
         public static UEATSerializer.UEAT.UObject? CreateUObject(CUE4Parse.UE4.Assets.Exports.UObject? assetObject, GenerationContext context)
@@ -35,8 +40,18 @@
                     continue;
                 }
 
-                ueatUObject.Properties.Add(entryName, entryValue);
+                ueatUObject.Properties.Add(KeyValuePair.Create(entryName, entryValue));
             }
+        }
+
+        public static T? GetPropertyValue<T>(IPropertyHolder? propertyHolder, string propertyName) where T : FPropertyTagType
+        {
+            if (propertyHolder == null)
+            {
+                return null;
+            }
+
+            return propertyHolder?.Properties?.Find(p => propertyName.Equals(p?.Name.Text))?.Tag as T;
         }
     }
 }

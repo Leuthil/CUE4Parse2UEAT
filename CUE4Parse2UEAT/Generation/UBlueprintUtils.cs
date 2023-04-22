@@ -1,8 +1,8 @@
-﻿namespace CUE4Parse2UEAT.Factory
+﻿namespace CUE4Parse2UEAT.Generation
 {
     public static class UBlueprintUtils
     {
-        public static void PopulateUBlueprintClassData(CUE4Parse.UE4.Objects.Engine.UBlueprintGeneratedClass cue4ParseUBlueprintGenClass,
+        public static void PopulateUBlueprintData(CUE4Parse.UE4.Objects.Engine.UBlueprintGeneratedClass cue4ParseUBlueprintGenClass,
             UEATSerializer.UEAT.UBlueprint ueatUBlueprintClass, GenerationContext context)
         {
             // GeneratedVariableNames (string[])

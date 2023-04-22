@@ -1,5 +1,5 @@
-﻿using UEATSerializer.Serializer;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using UEATSerializer.Serializer;
 
 namespace UEATSerializer.UEAT
 {
@@ -7,7 +7,7 @@ namespace UEATSerializer.UEAT
     {
         public PackageObject SuperStruct { get; set; }
         public List<UFunction> Children { get; set; } = new List<UFunction>();
-        public Dictionary<string, FProperty> ChildProperties { get; set; } = new Dictionary<string, FProperty>();
+        public List<KeyValuePair<string, FProperty>> ChildProperties { get; set; } = new List<KeyValuePair<string, FProperty>>();
 
         // (requires bytecode disassembly, not sure if available) (BytecodeDisassembler.SerializeFunction(struct))
         //public List<object> Script { get; set; } = new List<object>();

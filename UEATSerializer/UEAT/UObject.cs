@@ -1,5 +1,5 @@
-﻿using UEATSerializer.Serializer;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using UEATSerializer.Serializer;
 
 namespace UEATSerializer.UEAT
 {
@@ -8,7 +8,7 @@ namespace UEATSerializer.UEAT
         public UObjectIdentifier Id => new UObjectIdentifier(PackageName, ObjectName);
         public string PackageName { get; set; }
         public string ObjectName { get; set; }
-        public Dictionary<string, FPropertyValue> Properties { get; set; } = new Dictionary<string, FPropertyValue>();
+        public List<KeyValuePair<string, FPropertyValue>> Properties { get; set; } = new List<KeyValuePair<string, FPropertyValue>>();
 
         public virtual int[] ResolveObjectReferences(PackageObjectHierarchy objectHierarchy)
         {

@@ -2,7 +2,7 @@
 using CUE4Parse.UE4.Assets.Exports;
 using CUE4Parse.UE4.Assets.Objects;
 
-namespace CUE4Parse2UEAT.Factory
+namespace CUE4Parse2UEAT.Generation
 {
     public static class SimpleConstructionScriptUtils
     {
@@ -13,7 +13,7 @@ namespace CUE4Parse2UEAT.Factory
                 return null;
             }
 
-            return (uobject.Properties.Find(p => "SimpleConstructionScript".Equals(p?.Name.Text))?.Tag as ObjectProperty)?.Value?.ResolvedObject;
+            return UObjectUtils.GetPropertyValue<ObjectProperty>(uobject, "SimpleConstructionScript")?.Value?.ResolvedObject;
         }
 
         public static string[] GetSimpleConstructionScriptVariables(ResolvedObject? resolvedObject)
@@ -27,15 +27,14 @@ namespace CUE4Parse2UEAT.Factory
 
             if (resolvedObject.TryLoad(out var scsUObject))
             {
-                var allNodesPropertyValue = scsUObject?.Properties?.Find(p => "AllNodes".Equals(p?.Name.Text))?.Tag as ArrayProperty;
+                var allNodesPropertyValue = UObjectUtils.GetPropertyValue<ArrayProperty>(scsUObject, "AllNodes");
 
                 if (allNodesPropertyValue?.Value?.Properties != null)
                 {
                     foreach (var nodeProperty in allNodesPropertyValue.Value.Properties.Cast<ObjectProperty>())
                     {
                         var scsNodeUObject = nodeProperty?.Value?.Load();
-                        var internalVariableNamePropertyValue = scsNodeUObject?.Properties?
-                            .Find(p => "InternalVariableName".Equals(p?.Name.Text))?.Tag as NameProperty;
+                        var internalVariableNamePropertyValue = UObjectUtils.GetPropertyValue<NameProperty>(scsNodeUObject, "InternalVariableName");
                         var variableName = internalVariableNamePropertyValue?.Value.Text;
 
                         if (variableName != null)
