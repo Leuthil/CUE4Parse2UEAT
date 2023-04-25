@@ -60,7 +60,7 @@ namespace CUE4Parse2UEAT_CLI
 
                 if (!Directory.Exists(gameDirectory))
                 {
-                    Console.Out.WriteLine($"Error: Game directory {gameDirectory} does not exist");
+                    Console.Out.WriteLine($"Error: Game directory \"{gameDirectory}\" does not exist");
                     Console.Out.WriteLine();
                     return false;
                 }
@@ -79,7 +79,7 @@ namespace CUE4Parse2UEAT_CLI
 
                 if (!Directory.Exists(exportDirectory))
                 {
-                    Console.Out.WriteLine($"Export directory {exportDirectory} does not exist; creating it...");
+                    Console.Out.WriteLine($"Export directory \"{exportDirectory}\" does not exist; creating it...");
                     Console.Out.WriteLine();
                     Directory.CreateDirectory(exportDirectory);
                 }
