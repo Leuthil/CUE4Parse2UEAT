@@ -3,7 +3,7 @@ using CUE4Parse_Conversion.Textures;
 using CUE4Parse2UEAT.Generation;
 using SkiaSharp;
 
-namespace CUE4Parse2UEAT
+namespace CUE4Parse2UEAT.CLI
 {
     public class CUE4ParseGameFileExporter : IGameFileExporter<CUE4ParseGameFile>
     {

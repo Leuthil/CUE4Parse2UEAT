@@ -1,4 +1,4 @@
-﻿namespace CUE4Parse2UEAT
+﻿namespace CUE4Parse2UEAT.CLI
 {
     public interface IGameFileExporter
     {

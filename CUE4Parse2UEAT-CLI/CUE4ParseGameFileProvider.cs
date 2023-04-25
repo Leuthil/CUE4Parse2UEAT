@@ -4,7 +4,7 @@ using CUE4Parse.UE4.Assets;
 using CUE4Parse.UE4.Objects.Core.Misc;
 using CUE4Parse.UE4.Versions;
 
-namespace CUE4Parse2UEAT
+namespace CUE4Parse2UEAT.CLI
 {
     public class CUE4ParseGameFileProvider : IGameFileProvider<CUE4ParseGameFile>
     {

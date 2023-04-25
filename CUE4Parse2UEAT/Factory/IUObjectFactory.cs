@@ -1,4 +1,6 @@
-﻿namespace CUE4Parse2UEAT.Factory
+﻿using CUE4Parse2UEAT.Generation;
+
+namespace CUE4Parse2UEAT.Factory
 {
     public interface IUObjectFactory
     {

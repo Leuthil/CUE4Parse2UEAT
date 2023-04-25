@@ -396,3 +396,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+CUE4Parse2UEAT-CLI/Properties/launchSettings.json

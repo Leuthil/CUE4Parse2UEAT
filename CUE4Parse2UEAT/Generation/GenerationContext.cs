@@ -1,7 +1,7 @@
 ﻿using CUE4Parse.UE4.Assets;
 using UEATSerializer.UEAT;
 
-namespace CUE4Parse2UEAT
+namespace CUE4Parse2UEAT.Generation
 {
     public class GenerationContext
     {

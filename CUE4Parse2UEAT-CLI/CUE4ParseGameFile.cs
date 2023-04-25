@@ -1,6 +1,6 @@
 ﻿using CUE4Parse.FileProvider;
 
-namespace CUE4Parse2UEAT
+namespace CUE4Parse2UEAT.CLI
 {
     public class CUE4ParseGameFile : IGameFile
     {

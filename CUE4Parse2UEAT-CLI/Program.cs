@@ -1,6 +1,4 @@
-﻿using CUE4Parse2UEAT;
-
-namespace CUE4Parse2UEAT_CLI
+﻿namespace CUE4Parse2UEAT.CLI
 {
     internal class Program
     {
@@ -18,7 +16,7 @@ namespace CUE4Parse2UEAT_CLI
                 var provider = new CUE4ParseGameFileProvider(gameDirectory);
                 var exporter = new CUE4ParseGameFileExporter(provider);
                 exporter.Initialize(new ExporterConfig.Builder().SetExportDirectory(exportDirectory).Build());
-                
+
                 var gameFile = provider.GetGameFile(assetPackagePath);
                 exporter.Export(gameFile);
 
