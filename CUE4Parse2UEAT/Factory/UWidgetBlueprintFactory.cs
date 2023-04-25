@@ -25,7 +25,8 @@ namespace CUE4Parse2UEAT.Factory
 
             UEATSerializer.UEAT.UWidgetBlueprint widgetBlueprint = new UEATSerializer.UEAT.UWidgetBlueprint();
 
-            UObjectUtils.PopulateUObjectData(widgetBlueprintGenClass, widgetBlueprint, context);
+            UObjectUtils.PopulateUObjectIdentification(widgetBlueprintGenClass, widgetBlueprint, context);
+            UObjectUtils.PopulateUObjectProperties(widgetBlueprintGenClass, widgetBlueprint, context);
             UStructUtils.PopulateUStructData(widgetBlueprintGenClass, widgetBlueprint, context);
             UClassUtils.PopulateUClassData(widgetBlueprintGenClass, widgetBlueprint, context);
             UBlueprintUtils.PopulateUBlueprintData(widgetBlueprintGenClass, widgetBlueprint, context);

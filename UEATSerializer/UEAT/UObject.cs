@@ -5,9 +5,12 @@ namespace UEATSerializer.UEAT
 {
     public abstract class UObject : IEquatable<UObject>, IUObjectPointer, ISerializableForUEAT
     {
-        public UObjectIdentifier Id => new UObjectIdentifier(PackageName, ObjectName);
+        public UObjectIdentifier Id => new UObjectIdentifier(PackageName, ObjectName, OuterName);
+
         public string PackageName { get; set; }
         public string ObjectName { get; set; }
+        public string OuterName { get; set; }
+
         public List<KeyValuePair<string, FPropertyValue>> Properties { get; set; } = new List<KeyValuePair<string, FPropertyValue>>();
 
         public virtual int[] ResolveObjectReferences(PackageObjectHierarchy objectHierarchy)
@@ -33,7 +36,8 @@ namespace UEATSerializer.UEAT
         {
             HashSet<int> referencedObjects = new HashSet<int>();
 
-            writer.WritePropertyName("SkipDependencies");
+            // intentionally misspelled because this is how it's spelled in UEAT
+            writer.WritePropertyName("SkipDependecies");
             writer.WriteValue(false);
 
             writer.WritePropertyName("AssetObjectData");

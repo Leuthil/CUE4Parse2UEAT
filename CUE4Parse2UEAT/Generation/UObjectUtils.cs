@@ -24,12 +24,17 @@ namespace CUE4Parse2UEAT.Generation
             return factory.CreateUObject(assetObject, context);
         }
 
-        public static void PopulateUObjectData(CUE4Parse.UE4.Assets.Exports.UObject cue4ParseUObject,
+        public static void PopulateUObjectIdentification(CUE4Parse.UE4.Assets.Exports.UObject cue4ParseUObject,
             UEATSerializer.UEAT.UObject ueatUObject, GenerationContext context)
         {
             ueatUObject.PackageName = cue4ParseUObject.Owner?.Name;
             ueatUObject.ObjectName = cue4ParseUObject.Name;
+            ueatUObject.OuterName = cue4ParseUObject.Outer?.Name;
+        }
 
+        public static void PopulateUObjectProperties(CUE4Parse.UE4.Assets.Exports.UObject cue4ParseUObject,
+            UEATSerializer.UEAT.UObject ueatUObject, GenerationContext context)
+        {
             foreach (var property in cue4ParseUObject.Properties)
             {
                 var entryName = property.Name.Text;

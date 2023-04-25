@@ -4,16 +4,19 @@
     {
         public string PackageName { get; init; }
         public string ObjectName { get; init; }
+        public string OuterName { get; init; }
 
-        public UObjectIdentifier(string packageName, string objectName)
+        public UObjectIdentifier(string packageName, string objectName, string outerName)
         {
-            PackageName = packageName;
-            ObjectName = objectName;
+            PackageName = packageName ?? string.Empty;
+            ObjectName = objectName ?? string.Empty;
+            OuterName = outerName ?? string.Empty;
         }
 
         public bool Equals(UObjectIdentifier other)
         {
-            return string.Equals(PackageName, other.PackageName) && string.Equals(ObjectName, other.ObjectName);
+            return string.Equals(PackageName, other.PackageName) && string.Equals(ObjectName, other.ObjectName)
+                && string.Equals(OuterName, other.OuterName);
         }
 
         public override bool Equals(object? obj)
@@ -23,7 +26,7 @@
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(PackageName, ObjectName);
+            return HashCode.Combine(PackageName, ObjectName, OuterName);
         }
 
         public static bool operator ==(UObjectIdentifier x, UObjectIdentifier y)
@@ -36,6 +39,21 @@
             return !(x == y);
         }
 
-        public override string ToString() => $"{PackageName}.{ObjectName}";
+        public static bool Equals(UObjectIdentifier? x, UObjectIdentifier? y)
+        {
+            if (x == null)
+            {
+                return y == null;
+            }
+
+            if (y == null)
+            {
+                return false;
+            }
+
+            return x.Value.Equals(y.Value);
+        }
+
+        public override string ToString() => $"{PackageName}.{OuterName}.{ObjectName}";
     }
 }

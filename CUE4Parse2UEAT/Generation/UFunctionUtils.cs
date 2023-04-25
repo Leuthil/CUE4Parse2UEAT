@@ -11,7 +11,8 @@
 
             var ufunction = new UEATSerializer.UEAT.UFunction();
 
-            UObjectUtils.PopulateUObjectData(func, ufunction, context);
+            UObjectUtils.PopulateUObjectIdentification(func, ufunction, context);
+            UObjectUtils.PopulateUObjectProperties(func, ufunction, context);
             UStructUtils.PopulateUStructData(func, ufunction, context);
 
             ufunction.FunctionFlags = func.FunctionFlags.ToString();
