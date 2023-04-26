@@ -98,10 +98,10 @@
         static void WriteHelp()
         {
             Console.Out.WriteLine("Usage:");
-            Console.Out.WriteLine("\tCUE4Parse2UEAT-CLI.exe gameDir exportDir assetPackagePath");
+            Console.Out.WriteLine("\tCUE4Parse2UEAT.CLI.exe gameDir exportDir assetPackagePath");
             Console.Out.WriteLine();
             Console.Out.WriteLine("Example:");
-            Console.Out.WriteLine("\tCUE4Parse2UEAT-CLI.exe \"C:\\Steam\\SteamApps\\common\\Hogwarts Legacy\\Phoenix\" \"C:\\Dump\" \"Phoenix/Content/Pawn/Player/BP_Biped_Player.uasset\"");
+            Console.Out.WriteLine("\tCUE4Parse2UEAT.CLI.exe \"C:\\Steam\\SteamApps\\common\\Hogwarts Legacy\\Phoenix\" \"C:\\Dump\" \"Phoenix/Content/Pawn/Player/BP_Biped_Player.uasset\"");
             Console.Out.WriteLine();
             Console.Out.WriteLine("\tgameDir\t\t\tGame content directory.");
             Console.Out.WriteLine("\texportDir\t\tDirectory where asset json is exported to.");
