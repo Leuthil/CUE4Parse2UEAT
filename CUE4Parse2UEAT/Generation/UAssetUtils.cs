@@ -1,4 +1,4 @@
-﻿using CUE4Parse.UE4.Assets;
+using CUE4Parse.UE4.Assets;
 using CUE4Parse.Utils;
 using UEATSerializer.UEAT;
 using UObject = CUE4Parse.UE4.Assets.Exports.UObject;
@@ -7,8 +7,13 @@ namespace CUE4Parse2UEAT.Generation
 {
     public static class UAssetUtils
     {
-        public static UAsset CreateUAsset(IoPackage assetPackage)
+        public static UAsset? CreateUAsset(IoPackage assetPackage)
         {
+            if (assetPackage == null)
+            {
+                return null;
+            }
+
             var assetObject = FindAssetObject(assetPackage);
             var context = new GenerationContext(assetPackage, assetObject);
 
