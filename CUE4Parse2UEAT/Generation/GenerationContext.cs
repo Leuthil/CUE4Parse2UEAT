@@ -1,46 +1,32 @@
 ﻿using CUE4Parse.UE4.Assets;
-using UEATSerializer.UEAT;
+using CUE4Parse2UEAT.Factory;
 
 namespace CUE4Parse2UEAT.Generation
 {
     public class GenerationContext
     {
-        public IoPackage Package { get; }
-        public CUE4Parse.UE4.Assets.Exports.UObject AssetObject { get; }
+        public IPackage Package { get; init; }
+        public CUE4Parse.UE4.Assets.Exports.UObject AssetObject { get; init; }
+        public PackageObjectRepository PackageObjectRepository { get; init; }
+        public IPackageObjectFactory PackageObjectFactory { get; init; }
 
-        protected Dictionary<UObjectIdentifier, PackageObject> idToPackageObjectDict = new Dictionary<UObjectIdentifier, PackageObject>();
-
-        public GenerationContext(IoPackage package, CUE4Parse.UE4.Assets.Exports.UObject assetObject)
+        public GenerationContext(IPackage package, CUE4Parse.UE4.Assets.Exports.UObject assetObject)
         {
             Package = package;
             AssetObject = assetObject;
+            PackageObjectRepository = new PackageObjectRepository();
+            PackageObjectFactory = CreatePackageObjectFactory(package, PackageObjectRepository) ?? throw new ArgumentException($"Package \"{package}\" of type " +
+                $"\"{package?.GetType()?.Name}\" is not supported by any registered {nameof(IPackageObjectFactory)}", nameof(package));
         }
 
-        public bool ContainsPackageObject(UObjectIdentifier id)
+        protected static IPackageObjectFactory? CreatePackageObjectFactory(IPackage package, PackageObjectRepository packageObjectRepository)
         {
-            return idToPackageObjectDict.ContainsKey(id);
-        }
-
-        public PackageObject? GetPackageObject(UObjectIdentifier id)
-        {
-            if (idToPackageObjectDict.TryGetValue(id, out PackageObject? packageObject))
+            if (package is IoPackage ioPackage)
             {
-                return packageObject;
+                return new IoPackageObjectFactory(ioPackage, packageObjectRepository);
             }
 
             return null;
-        }
-
-        public bool AddPackageObject(PackageObject packageObject)
-        {
-            if (ContainsPackageObject(packageObject.Id))
-            {
-                return false;
-            }
-
-            idToPackageObjectDict.Add(packageObject.Id, packageObject);
-
-            return true;
         }
     }
 }

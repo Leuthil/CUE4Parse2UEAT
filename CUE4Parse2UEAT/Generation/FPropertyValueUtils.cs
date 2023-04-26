@@ -1,12 +1,13 @@
 ﻿using CUE4Parse.UE4.Assets.Objects;
 using CUE4Parse.UE4.Objects.Core.Misc;
+using CUE4Parse2UEAT.Factory;
 using UEATSerializer.UEAT;
 
 namespace CUE4Parse2UEAT.Generation
 {
     public static class FPropertyValueUtils
     {
-        public static FPropertyValue? CreateFPropertyValue(FPropertyTagType propertyTagType, GenerationContext context)
+        public static FPropertyValue? CreateFPropertyValue(FPropertyTagType propertyTagType, IPackageObjectFactory packageObjectFactory)
         {
             switch (propertyTagType)
             {
@@ -14,7 +15,7 @@ namespace CUE4Parse2UEAT.Generation
                     FPropertyArrayValue arrayProp = new FPropertyArrayValue();
                     foreach (var property in arrayProperty.Value.Properties)
                     {
-                        arrayProp.Items.Add(CreateFPropertyValue(property, context));
+                        arrayProp.Items.Add(CreateFPropertyValue(property, packageObjectFactory));
                     }
                     return arrayProp;
                 case BoolProperty boolProperty:
@@ -27,7 +28,7 @@ namespace CUE4Parse2UEAT.Generation
                     return byteProp;
                 case ClassProperty classProperty:
                     FObjectPropertyBaseValue objProp = new FObjectPropertyBaseValue();
-                    objProp.Object = PackageObjectUtils.CreatePackageObject(classProperty.Value.ResolvedObject, context);
+                    objProp.Object = packageObjectFactory.CreatePackageObject(classProperty.Value?.ResolvedObject?.Load());
                     return objProp;
                 case DoubleProperty doubleProperty:
                     FNumericPropertyValue doubleProp = new FNumericPropertyValue();
@@ -63,16 +64,15 @@ namespace CUE4Parse2UEAT.Generation
                     return intProp;
                 case InterfaceProperty interfaceProperty:
                     FInterfacePropertyValue interfaceProp = new FInterfacePropertyValue();
-                    interfaceProp.Object = PackageObjectUtils.CreatePackageObject(
-                        context.Package.ResolvePackageIndex(interfaceProperty.Value.Object), context);
+                    interfaceProp.Object = packageObjectFactory.CreatePackageObject(interfaceProperty.Value?.Object?.ResolvedObject?.Load());
                     return interfaceProp;
                 case MapProperty mapProperty:
                     FMapPropertyValue mapProp = new FMapPropertyValue();
                     foreach (var innerMapProperty in mapProperty.Value.Properties)
                     {
                         mapProp.KeyValuesPairs.Add(
-                            CreateFPropertyValue(innerMapProperty.Key, context),
-                            CreateFPropertyValue(innerMapProperty.Value, context));
+                            CreateFPropertyValue(innerMapProperty.Key, packageObjectFactory),
+                            CreateFPropertyValue(innerMapProperty.Value, packageObjectFactory));
                     }
                     return mapProp;
                 case MulticastDelegateProperty multicastDelegateProperty:
@@ -84,13 +84,13 @@ namespace CUE4Parse2UEAT.Generation
                     return nameProp;
                 case ObjectProperty objectProperty:
                     FObjectPropertyBaseValue objectPropertyBaseProp = new FObjectPropertyBaseValue();
-                    objectPropertyBaseProp.Object = PackageObjectUtils.CreatePackageObject(objectProperty.Value.ResolvedObject, context);
+                    objectPropertyBaseProp.Object = packageObjectFactory.CreatePackageObject(objectProperty.Value?.ResolvedObject?.Load());
                     return objectPropertyBaseProp;
                 case SetProperty setProperty:
                     FSetPropertyValue setProp = new FSetPropertyValue();
                     foreach (var innerSetProperty in setProperty.Value.Properties)
                     {
-                        setProp.Values.Add(CreateFPropertyValue(innerSetProperty, context));
+                        setProp.Values.Add(CreateFPropertyValue(innerSetProperty, packageObjectFactory));
                     }
                     return setProp;
                 case SoftObjectProperty softObjectProperty:
@@ -130,7 +130,7 @@ namespace CUE4Parse2UEAT.Generation
                             {
                                 fallbackStructProp.Properties.Add(KeyValuePair.Create(
                                     fallbackStructInnerProperty.Name.Text,
-                                    CreateFPropertyValue(fallbackStructInnerProperty.Tag, context)));
+                                    CreateFPropertyValue(fallbackStructInnerProperty.Tag, packageObjectFactory)));
                             }
                             return fallbackStructProp;
                     }

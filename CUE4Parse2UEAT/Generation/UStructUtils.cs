@@ -1,11 +1,13 @@
-﻿namespace CUE4Parse2UEAT.Generation
+﻿using CUE4Parse2UEAT.Factory;
+
+namespace CUE4Parse2UEAT.Generation
 {
     public static class UStructUtils
     {
         public static void PopulateUStructData(CUE4Parse.UE4.Objects.UObject.UStruct cue4ParseUStruct,
-            UEATSerializer.UEAT.UStruct ueatUStruct, GenerationContext context)
+            UEATSerializer.UEAT.UStruct ueatUStruct, IPackageObjectFactory packageObjectFactory)
         {
-            ueatUStruct.SuperStruct = PackageObjectUtils.CreatePackageObject(cue4ParseUStruct.SuperStruct.ResolvedObject, context);
+            ueatUStruct.SuperStruct = packageObjectFactory.CreatePackageObject(cue4ParseUStruct.SuperStruct?.ResolvedObject?.Load());
 
             foreach (var child in cue4ParseUStruct.Children)
             {
@@ -19,7 +21,7 @@
                     continue;
                 }
 
-                var ufunction = UFunctionUtils.CreateUFunction(func, context);
+                var ufunction = UFunctionUtils.CreateUFunction(func, packageObjectFactory);
 
                 if (ufunction == null)
                 {
@@ -36,7 +38,7 @@
                     continue;
                 }
 
-                var fproperty = FPropertyUtils.CreateFProperty(fprop, context);
+                var fproperty = FPropertyUtils.CreateFProperty(fprop, packageObjectFactory);
 
                 if (fproperty == null)
                 {

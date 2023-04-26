@@ -25,7 +25,7 @@ namespace CUE4Parse2UEAT.Generation
         }
 
         public static void PopulateUObjectIdentification(CUE4Parse.UE4.Assets.Exports.UObject cue4ParseUObject,
-            UEATSerializer.UEAT.UObject ueatUObject, GenerationContext context)
+            UEATSerializer.UEAT.UObject ueatUObject)
         {
             ueatUObject.PackageName = cue4ParseUObject.Owner?.Name;
             ueatUObject.ObjectName = cue4ParseUObject.Name;
@@ -33,12 +33,12 @@ namespace CUE4Parse2UEAT.Generation
         }
 
         public static void PopulateUObjectProperties(CUE4Parse.UE4.Assets.Exports.UObject cue4ParseUObject,
-            UEATSerializer.UEAT.UObject ueatUObject, GenerationContext context)
+            UEATSerializer.UEAT.UObject ueatUObject, IPackageObjectFactory packageObjectFactory)
         {
             foreach (var property in cue4ParseUObject.Properties)
             {
                 var entryName = property.Name.Text;
-                var entryValue = FPropertyValueUtils.CreateFPropertyValue(property.Tag, context);
+                var entryValue = FPropertyValueUtils.CreateFPropertyValue(property.Tag, packageObjectFactory);
 
                 if (entryValue == null)
                 {

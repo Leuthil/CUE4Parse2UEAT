@@ -3,7 +3,7 @@
     public static class UBlueprintUtils
     {
         public static void PopulateUBlueprintData(CUE4Parse.UE4.Objects.Engine.UBlueprintGeneratedClass cue4ParseUBlueprintGenClass,
-            UEATSerializer.UEAT.UBlueprint ueatUBlueprintClass, GenerationContext context)
+            UEATSerializer.UEAT.UBlueprint ueatUBlueprintClass)
         {
             // GeneratedVariableNames (string[])
             // (Composed of variables from: SimpleConstructionScript.GetAllNodes.GetVariableName, Timelines.GetVariableName,

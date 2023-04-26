@@ -7,7 +7,7 @@ namespace CUE4Parse2UEAT.Generation
 {
     public static class UAssetUtils
     {
-        public static UAsset? CreateUAsset(IoPackage assetPackage)
+        public static UAsset? CreateUAsset(IPackage assetPackage)
         {
             if (assetPackage == null)
             {
@@ -19,17 +19,19 @@ namespace CUE4Parse2UEAT.Generation
 
             var uasset = new UAsset();
             uasset.PackageName = assetPackage.Name;
-            uasset.ObjectName = assetPackage.Name.SubstringAfterLast('/');
+            uasset.ObjectName = assetObject.Name;
             uasset.ClassName = GetAssetClassName(assetObject);
             uasset.UObjectAsset = UObjectUtils.CreateUObject(assetObject, context);
 
-            uasset.ImportPackageObjects = assetPackage.ImportMap.Select(i => PackageObjectUtils.CreatePackageObject(i, context));
-            uasset.ExportPackageObjects = assetPackage.ExportMap.Select(e => PackageObjectUtils.CreatePackageObject(e, context));
+            assetPackage.GetExports().Select(e => context.PackageObjectFactory.CreatePackageObject(e));
+
+            uasset.ImportPackageObjects = context.PackageObjectRepository.PackageObjects.Where(p => p is ImportPackageObject);
+            uasset.ExportPackageObjects = context.PackageObjectRepository.PackageObjects.Where(p => p is ExportPackageObject);
 
             return uasset;
         }
 
-        public static UObject? FindAssetObject(IoPackage package)
+        public static UObject? FindAssetObject(IPackage package)
         {
             var name = package.Name.SubstringAfterLast('/');
             var uobject = package.GetExportOrNull(name);

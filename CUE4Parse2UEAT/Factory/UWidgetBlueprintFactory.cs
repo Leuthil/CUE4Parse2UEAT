@@ -25,11 +25,11 @@ namespace CUE4Parse2UEAT.Factory
 
             UEATSerializer.UEAT.UWidgetBlueprint widgetBlueprint = new UEATSerializer.UEAT.UWidgetBlueprint();
 
-            UObjectUtils.PopulateUObjectIdentification(widgetBlueprintGenClass, widgetBlueprint, context);
-            UObjectUtils.PopulateUObjectProperties(widgetBlueprintGenClass, widgetBlueprint, context);
-            UStructUtils.PopulateUStructData(widgetBlueprintGenClass, widgetBlueprint, context);
-            UClassUtils.PopulateUClassData(widgetBlueprintGenClass, widgetBlueprint, context);
-            UBlueprintUtils.PopulateUBlueprintData(widgetBlueprintGenClass, widgetBlueprint, context);
+            UObjectUtils.PopulateUObjectIdentification(widgetBlueprintGenClass, widgetBlueprint);
+            UObjectUtils.PopulateUObjectProperties(widgetBlueprintGenClass, widgetBlueprint, context.PackageObjectFactory);
+            UStructUtils.PopulateUStructData(widgetBlueprintGenClass, widgetBlueprint, context.PackageObjectFactory);
+            UClassUtils.PopulateUClassData(widgetBlueprintGenClass, widgetBlueprint, context.PackageObjectFactory);
+            UBlueprintUtils.PopulateUBlueprintData(widgetBlueprintGenClass, widgetBlueprint);
 
             var rootWidget = UWidgetBlueprintUtils.FindRootWidget(widgetBlueprintGenClass);
             UWidgetBlueprintUtils.ForEachWidget(rootWidget, (widget) =>
@@ -107,7 +107,7 @@ namespace CUE4Parse2UEAT.Factory
                     movieSceneEvent.FunctionName = UObjectUtils.GetPropertyValue<ObjectProperty>(ptrs, "Function")?.Value?.Name;
                     // this seems to always be null / empty
                     var boundObjectProperty = UObjectUtils.GetPropertyValue<FieldPathProperty>(ptrs, "BoundObjectProperty");
-                    movieSceneEvent.BoundObjectProperty = (FFieldPathPropertyValue?)FPropertyValueUtils.CreateFPropertyValue(boundObjectProperty, context);
+                    movieSceneEvent.BoundObjectProperty = (FFieldPathPropertyValue?)FPropertyValueUtils.CreateFPropertyValue(boundObjectProperty, context.PackageObjectFactory);
 
                     eventSection.Functions.Add(movieSceneEvent);
                 }

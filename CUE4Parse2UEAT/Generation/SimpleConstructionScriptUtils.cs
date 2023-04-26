@@ -1,46 +1,42 @@
-﻿using CUE4Parse.UE4.Assets;
-using CUE4Parse.UE4.Assets.Exports;
+﻿using CUE4Parse.UE4.Assets.Exports;
 using CUE4Parse.UE4.Assets.Objects;
 
 namespace CUE4Parse2UEAT.Generation
 {
     public static class SimpleConstructionScriptUtils
     {
-        public static ResolvedObject? FindSimpleConstructionScript(UObject? uobject)
+        public static UObject? FindSimpleConstructionScript(UObject? uobject)
         {
             if (uobject == null)
             {
                 return null;
             }
 
-            return UObjectUtils.GetPropertyValue<ObjectProperty>(uobject, "SimpleConstructionScript")?.Value?.ResolvedObject;
+            return UObjectUtils.GetPropertyValue<ObjectProperty>(uobject, "SimpleConstructionScript")?.Value?.ResolvedObject?.Load();
         }
 
-        public static string[] GetSimpleConstructionScriptVariables(ResolvedObject? resolvedObject)
+        public static string[] GetSimpleConstructionScriptVariables(UObject? scsUobject)
         {
-            if (resolvedObject == null)
+            if (scsUobject == null)
             {
                 return Array.Empty<string>();
             }
 
             HashSet<string> variables = new HashSet<string>();
 
-            if (resolvedObject.TryLoad(out var scsUObject))
+            var allNodesPropertyValue = UObjectUtils.GetPropertyValue<ArrayProperty>(scsUobject, "AllNodes");
+
+            if (allNodesPropertyValue?.Value?.Properties != null)
             {
-                var allNodesPropertyValue = UObjectUtils.GetPropertyValue<ArrayProperty>(scsUObject, "AllNodes");
-
-                if (allNodesPropertyValue?.Value?.Properties != null)
+                foreach (var nodeProperty in allNodesPropertyValue.Value.Properties.Cast<ObjectProperty>())
                 {
-                    foreach (var nodeProperty in allNodesPropertyValue.Value.Properties.Cast<ObjectProperty>())
-                    {
-                        var scsNodeUObject = nodeProperty?.Value?.Load();
-                        var internalVariableNamePropertyValue = UObjectUtils.GetPropertyValue<NameProperty>(scsNodeUObject, "InternalVariableName");
-                        var variableName = internalVariableNamePropertyValue?.Value.Text;
+                    var scsNodeUObject = nodeProperty?.Value?.Load();
+                    var internalVariableNamePropertyValue = UObjectUtils.GetPropertyValue<NameProperty>(scsNodeUObject, "InternalVariableName");
+                    var variableName = internalVariableNamePropertyValue?.Value.Text;
 
-                        if (variableName != null)
-                        {
-                            variables.Add(variableName);
-                        }
+                    if (variableName != null)
+                    {
+                        variables.Add(variableName);
                     }
                 }
             }
