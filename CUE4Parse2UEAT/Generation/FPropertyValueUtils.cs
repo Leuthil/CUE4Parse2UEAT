@@ -28,7 +28,7 @@ namespace CUE4Parse2UEAT.Generation
                     return byteProp;
                 case ClassProperty classProperty:
                     FObjectPropertyBaseValue objProp = new FObjectPropertyBaseValue();
-                    objProp.Object = packageObjectFactory.CreatePackageObject(classProperty.Value?.ResolvedObject?.Load());
+                    objProp.Object = packageObjectFactory.CreatePackageObject(classProperty.Value);
                     return objProp;
                 case DoubleProperty doubleProperty:
                     FNumericPropertyValue doubleProp = new FNumericPropertyValue();
@@ -40,7 +40,7 @@ namespace CUE4Parse2UEAT.Generation
                     return enumProp;
                 case FieldPathProperty fieldPathProperty:
                     FFieldPathPropertyValue fieldPathProp = new FFieldPathPropertyValue();
-                    fieldPathProp.Value = string.Join('/', fieldPathProperty.Value.Path.Select(n => n.Text));
+                    fieldPathProp.Value = string.Join('/', fieldPathProperty.Value.Path.Select(n => n.Text)); // TODO: This is definitely wrong
                     return fieldPathProp;
                 case FloatProperty floatProperty:
                     FNumericPropertyValue floatProp = new FNumericPropertyValue();
@@ -64,7 +64,7 @@ namespace CUE4Parse2UEAT.Generation
                     return intProp;
                 case InterfaceProperty interfaceProperty:
                     FInterfacePropertyValue interfaceProp = new FInterfacePropertyValue();
-                    interfaceProp.Object = packageObjectFactory.CreatePackageObject(interfaceProperty.Value?.Object?.ResolvedObject?.Load());
+                    interfaceProp.Object = packageObjectFactory.CreatePackageObject(interfaceProperty.Value?.Object);
                     return interfaceProp;
                 case MapProperty mapProperty:
                     FMapPropertyValue mapProp = new FMapPropertyValue();
@@ -84,7 +84,7 @@ namespace CUE4Parse2UEAT.Generation
                     return nameProp;
                 case ObjectProperty objectProperty:
                     FObjectPropertyBaseValue objectPropertyBaseProp = new FObjectPropertyBaseValue();
-                    objectPropertyBaseProp.Object = packageObjectFactory.CreatePackageObject(objectProperty.Value?.ResolvedObject?.Load());
+                    objectPropertyBaseProp.Object = packageObjectFactory.CreatePackageObject(objectProperty.Value);
                     return objectPropertyBaseProp;
                 case SetProperty setProperty:
                     FSetPropertyValue setProp = new FSetPropertyValue();

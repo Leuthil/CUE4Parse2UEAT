@@ -17,13 +17,13 @@ namespace CUE4Parse2UEAT.Generation
             {
                 case CUE4Parse.UE4.Objects.UObject.FEnumProperty enumProp:
                     var enumProperty = new UEATSerializer.UEAT.FEnumProperty();
-                    enumProperty.Enum = packageObjectFactory.CreatePackageObject(enumProp.Enum?.ResolvedObject?.Load());
+                    enumProperty.Enum = packageObjectFactory.CreatePackageObject(enumProp.Enum);
                     enumProperty.UnderlyingProp = (UEATSerializer.UEAT.FNumericProperty)CreateFProperty(enumProp.UnderlyingProp, packageObjectFactory);
                     property = enumProperty;
                     break;
                 case CUE4Parse.UE4.Objects.UObject.FStructProperty structProp:
                     var structProperty = new UEATSerializer.UEAT.FStructProperty();
-                    structProperty.Struct = packageObjectFactory.CreatePackageObject(structProp.Struct?.ResolvedObject?.Load());
+                    structProperty.Struct = packageObjectFactory.CreatePackageObject(structProp.Struct);
                     property = structProperty;
                     break;
                 case CUE4Parse.UE4.Objects.UObject.FArrayProperty arrayProp:
@@ -39,17 +39,17 @@ namespace CUE4Parse2UEAT.Generation
                     break;
                 case CUE4Parse.UE4.Objects.UObject.FByteProperty byteProp:
                     var byteProperty = new UEATSerializer.UEAT.FByteProperty();
-                    byteProperty.Enum = packageObjectFactory.CreatePackageObject(byteProp.Enum?.ResolvedObject?.Load());
+                    byteProperty.Enum = packageObjectFactory.CreatePackageObject(byteProp.Enum);
                     property = byteProperty;
                     break;
                 case CUE4Parse.UE4.Objects.UObject.FClassProperty classProp:
                     var classProperty = new UEATSerializer.UEAT.FClassProperty();
-                    classProperty.MetaClass = packageObjectFactory.CreatePackageObject(classProp.MetaClass?.ResolvedObject?.Load());
+                    classProperty.MetaClass = packageObjectFactory.CreatePackageObject(classProp.MetaClass);
                     property = classProperty;
                     break;
                 case CUE4Parse.UE4.Objects.UObject.FInterfaceProperty interfaceProp:
                     var interfaceProperty = new UEATSerializer.UEAT.FInterfaceProperty();
-                    interfaceProperty.InterfaceClass = packageObjectFactory.CreatePackageObject(interfaceProp.InterfaceClass?.ResolvedObject?.Load());
+                    interfaceProperty.InterfaceClass = packageObjectFactory.CreatePackageObject(interfaceProp.InterfaceClass);
                     property = interfaceProperty;
                     break;
                 case CUE4Parse.UE4.Objects.UObject.FMapProperty mapProp:
@@ -65,7 +65,7 @@ namespace CUE4Parse2UEAT.Generation
                     break;
                 case CUE4Parse.UE4.Objects.UObject.FSoftClassProperty softClassProp:
                     var softClassProperty = new UEATSerializer.UEAT.FSoftClassProperty();
-                    softClassProperty.MetaClass = packageObjectFactory.CreatePackageObject(softClassProp.MetaClass?.ResolvedObject?.Load());
+                    softClassProperty.MetaClass = packageObjectFactory.CreatePackageObject(softClassProp.MetaClass);
                     property = softClassProperty;
                     break;
                 case CUE4Parse.UE4.Objects.UObject.FFieldPathProperty fieldPathProp:
@@ -75,7 +75,7 @@ namespace CUE4Parse2UEAT.Generation
                     break;
                 case CUE4Parse.UE4.Objects.UObject.FObjectProperty objectProp:
                     var objectPropertyBaseProperty = new UEATSerializer.UEAT.FObjectPropertyBase();
-                    objectPropertyBaseProperty.PropertyClass = packageObjectFactory.CreatePackageObject(objectProp.PropertyClass?.ResolvedObject?.Load());
+                    objectPropertyBaseProperty.PropertyClass = packageObjectFactory.CreatePackageObject(objectProp.PropertyClass);
                     property = objectPropertyBaseProperty;
                     break;
                 case CUE4Parse.UE4.Objects.UObject.FDelegateProperty delegateProp:

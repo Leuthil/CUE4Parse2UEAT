@@ -12,38 +12,163 @@ namespace CUE4Parse2UEAT.Factory
         {
         }
 
-        public override PackageObject? CreatePackageObject(CUE4Parse.UE4.Assets.Exports.UObject? uobject)
+        public override void ProcessImports(IoPackage package)
         {
-            if (uobject == null)
+            if (package == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < package.ImportMap.Length; i++)
+            {
+                var import = package.ImportMap[i];
+                CreatePackageObject(package.ResolveObjectIndex(import));
+            }
+        }
+
+        public override void ProcessExports(IoPackage package)
+        {
+            if (package == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < package.ExportMap.Length; i++)
+            {
+                var exportMapEntry = package.ExportMap[i];
+                var exportObject = package.ExportsLazy[i];
+                var outerResolvedObject = package.ResolveObjectIndex(exportMapEntry.OuterIndex);
+                var classResolvedObject = package.ResolveObjectIndex(exportMapEntry.ClassIndex);
+
+                ExportPackageObject packageObject = new ExportPackageObject();
+                packageObject.ObjectName = CreateFNameFromMappedName(exportMapEntry.ObjectName, package).Text;
+                packageObject.PackageName = package.Name;
+                packageObject.OuterName = package.ResolveObjectIndex(exportMapEntry.OuterIndex)?.Name.Text;
+
+                if (packageObject.OuterName == null)
+                {
+                    packageObject.OuterName = package.Name;
+                }
+
+                if (Repository.Contains(packageObject.Id))
+                {
+                    continue;
+                }
+
+                // add before resolving any other objects
+                Repository.Add(packageObject);
+
+                UObjectUtils.PopulateUObjectProperties(exportObject.Value, packageObject, this);
+
+                packageObject.ObjectClass = CreatePackageObject(classResolvedObject);
+                packageObject.Outer = CreatePackageObject(outerResolvedObject) ?? CreatePackageImportPackageObject(package.Name);
+
+                continue;
+            }
+        }
+
+        public override PackageObject? CreatePackageObject(FPackageIndex? fPackageIndex)
+        {
+            return CreatePackageObject(fPackageIndex?.ResolvedObject);
+        }
+
+        public PackageObject? CreatePackageObject(ResolvedObject? resolvedObject)
+        {
+            if (resolvedObject == null)
             {
                 return null;
             }
 
-            // import
-            if (!Package.Name.Equals(GetPackage(uobject)?.Name))
-            {
-                return CreateImportPackageObject(uobject);
-            }
+            var packageName = GetPackage(resolvedObject)?.Name.Text;
+            var objectName = resolvedObject.Name.Text;
 
-            return CreateExportPackageObject(uobject);
+            if (Package.Name != packageName)
+            {
+                ImportPackageObject packageObject = new ImportPackageObject();
+                packageObject.PackageName = packageName;
+                packageObject.ObjectName = objectName;
+                packageObject.OuterName = resolvedObject.Outer?.Name.Text;
+
+                if (packageObject.PackageName != null && packageObject.PackageName == packageObject.ObjectName)
+                {
+                    return CreatePackageImportPackageObject(packageObject.PackageName);
+                }
+
+                if (Repository.Contains(packageObject.Id))
+                {
+                    return Repository.Get(packageObject.Id);
+                }
+
+                // add before resolving any other objects
+                Repository.Add(packageObject);
+
+                packageObject.Outer = CreatePackageObject(resolvedObject.Outer);
+                packageObject.ClassPackage = GetPackage(resolvedObject.Class)?.Name.Text;
+                packageObject.ClassName = resolvedObject.Class?.Name.Text;
+
+                if (packageObject.ClassName == "Class")
+                {
+                    packageObject.ClassPackage = "/Script/CoreUObject";
+
+                    // Workaround because CUE4Parse cannot differentiate between UScriptStruct and UClass, so everything is classified as "Class".
+                    // This relies on .usmap mappings file being provided to CUE4Parse provider.
+                    // See code comment within CUE4Parse.UE4.Assets.ResolvedScriptObject.
+                    if (Package.Mappings != null
+                        && Package.Mappings.Types.TryGetValue(resolvedObject.Name.Text, out var type))
+                    {
+                        var superType = type;
+
+                        while (superType?.Super.Value != null)
+                        {
+                            superType = superType.Super.Value;
+                        }
+
+                        // no idea if this is a legit check, but it seems to work so far
+                        bool isStruct = !"Object".Equals(superType.Name);
+                        if (isStruct)
+                        {
+                            packageObject.ClassName = "ScriptStruct";
+                        }
+                    }
+                }
+
+                CreateClassImportPackageObject(packageObject.ClassPackage, packageObject.ClassName);
+
+                return packageObject;
+            }
+            else
+            {
+                ExportPackageObject packageObject = new ExportPackageObject();
+                packageObject.PackageName = GetPackage(resolvedObject)?.Name.Text;
+                packageObject.ObjectName = resolvedObject.Name.Text;
+                packageObject.OuterName = resolvedObject.Outer?.Name.Text;
+                packageObject.ObjectFlags = (int)resolvedObject.Load()?.Flags;
+
+                if (Repository.Contains(packageObject.Id))
+                {
+                    return Repository.Get(packageObject.Id);
+                }
+
+                // add before resolving any other objects
+                Repository.Add(packageObject);
+
+                UObjectUtils.PopulateUObjectProperties(resolvedObject.Load(), packageObject, this);
+
+                packageObject.ObjectClass = CreatePackageObject(resolvedObject.Class);
+                packageObject.Outer = CreatePackageObject(resolvedObject.Outer);
+
+                return packageObject;
+            }
         }
 
-        public PackageObject CreateImportPackageObject(CUE4Parse.UE4.Assets.Exports.UObject uobject)
+        public PackageObject? CreateClassImportPackageObject(string classPackageName, string className)
         {
-            if (uobject is IPackage)
-            {
-                return CreatePackageImportPackageObject(uobject.Name);
-            }
-
-            if (uobject is UScriptClass uscriptClass)
-            {
-                return CreateScriptClassImportPackageObject(uscriptClass);
-            }
-
-            var packageObject = new ImportPackageObject();
-            packageObject.PackageName = GetPackage(uobject)?.Name;
-            packageObject.ObjectName = uobject.Name;
-            packageObject.OuterName = uobject.Outer?.Name;
+            ImportPackageObject packageObject = new ImportPackageObject();
+            packageObject.PackageName = classPackageName;
+            packageObject.ObjectName = className;
+            packageObject.ClassPackage = classPackageName;
+            packageObject.ClassName = className;
+            packageObject.OuterName = classPackageName;
 
             if (Repository.Contains(packageObject.Id))
             {
@@ -53,85 +178,16 @@ namespace CUE4Parse2UEAT.Factory
             // add before resolving any other objects
             Repository.Add(packageObject);
 
-            packageObject.ClassPackage = GetClassPackageName(uobject);
-            packageObject.ClassName = uobject.Class?.Name;
-            packageObject.Outer = CreatePackageObject(uobject?.Outer);
-
-            CreatePackageImportPackageObject(packageObject.PackageName);
+            packageObject.Outer = CreatePackageImportPackageObject(classPackageName);
 
             return packageObject;
         }
 
-        public PackageObject CreateScriptClassImportPackageObject(UScriptClass uscriptClass, string? packageName = null)
-        {
-            var packageObject = new ImportPackageObject();
-            packageObject.PackageName = packageName ?? uscriptClass.Owner?.Name;
-            packageObject.ObjectName = uscriptClass.Name;
-            packageObject.ClassName = uscriptClass.Class?.Name;
-            packageObject.ClassPackage = GetClassPackageName(uscriptClass);
-            packageObject.OuterName = uscriptClass.Outer?.Name;
-
-            // fixups
-            
-            if (packageObject.PackageName == null)
-            {
-                packageObject.PackageName = "/Script/CoreUObject";
-            }
-
-            if (packageObject.ClassPackage == null)
-            {
-                packageObject.ClassPackage = "/Script/CoreUObject";
-            }
-
-            if (packageObject.ClassName == null)
-            {
-                packageObject.ClassName = "Class";
-            }
-
-            // Workaround because CUE4Parse cannot differentiate between UScriptStruct and UClass, so everything is classified as "Class".
-            // This relies on .usmap mappings file being provided to CUE4Parse provider.
-            // See code comment within CUE4Parse.UE4.Assets.ResolvedScriptObject.
-            if (Package.Mappings != null
-                && Package.Mappings.Types.TryGetValue(uscriptClass.Name, out var type))
-            {
-                var superType = type;
-
-                while (superType?.Super.Value != null)
-                {
-                    superType = superType.Super.Value;
-                }
-
-                // no idea if this is a legit check, but it seems to work so far
-                bool isStruct = !"Object".Equals(superType.Name);
-                if (isStruct)
-                {
-                    packageObject.ClassName = "ScriptStruct";
-                }
-            }
-
-            packageObject.OuterName = packageObject.PackageName;
-
-            if (Repository.Contains(packageObject.Id))
-            {
-                return Repository.Get(packageObject.Id);
-            }
-
-            // add before resolving any other objects
-            Repository.Add(packageObject);
-
-            // class outer should be a package... I think
-            packageObject.Outer = CreatePackageImportPackageObject(packageObject.PackageName);
-
-            CreatePackageImportPackageObject(packageObject.PackageName);
-
-            return packageObject;
-        }
-
-        public PackageObject? CreatePackageImportPackageObject(string objectName)
+        public PackageObject? CreatePackageImportPackageObject(string packageName)
         {
             var packageObject = new ImportPackageObject();
             packageObject.PackageName = "/Script/CoreUObject";
-            packageObject.ObjectName = objectName;
+            packageObject.ObjectName = packageName;
             packageObject.OuterName = "/Script/CoreUObject";
 
             if (Repository.Contains(packageObject.Id))
@@ -144,38 +200,8 @@ namespace CUE4Parse2UEAT.Factory
 
             packageObject.ClassPackage = "/Script/CoreUObject";
             packageObject.ClassName = "Package";
-
-            return packageObject;
-        }
-
-        public ExportPackageObject? CreateExportPackageObject(CUE4Parse.UE4.Assets.Exports.UObject exportObject)
-        {
-            var packageObject = new ExportPackageObject();
-
-            // set this early so the UObjectIdentifier is valid before adding to the context
-            UObjectUtils.PopulateUObjectIdentification(exportObject, packageObject);
-
-            if (Repository.Contains(packageObject.Id))
-            {
-                return Repository.Get(packageObject.Id) as ExportPackageObject;
-            }
-
-            // add before resolving any other objects
-            Repository.Add(packageObject);
-
-            UObjectUtils.PopulateUObjectProperties(exportObject, packageObject, this);
-
-            if (exportObject?.Class is UScriptClass uscriptClass)
-            {
-                packageObject.ObjectClass = CreateScriptClassImportPackageObject(uscriptClass, GetClassPackageName(exportObject));
-            }
-            else
-            {
-                packageObject.ObjectClass = CreatePackageObject(exportObject?.Class);
-            }
-
-            packageObject.ObjectFlags = (int)exportObject.Flags;
-            packageObject.Outer = CreatePackageObject(exportObject?.Outer);
+            
+            // packageObject.Outer intentionally left null
 
             return packageObject;
         }
@@ -213,9 +239,9 @@ namespace CUE4Parse2UEAT.Factory
             return classPackageName;
         }
 
-        protected static CUE4Parse.UE4.Assets.Exports.UObject? GetPackage(CUE4Parse.UE4.Assets.Exports.UObject? uobject)
+        protected static ResolvedObject? GetPackage(ResolvedObject? resolvedObject)
         {
-            var package = uobject;
+            var package = resolvedObject;
 
             while (package?.Outer != null)
             {

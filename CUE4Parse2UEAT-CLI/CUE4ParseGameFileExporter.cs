@@ -45,7 +45,7 @@ namespace CUE4Parse2UEAT.CLI
                 return false;
             }
 
-            var uasset = UAssetUtils.CreateUAsset(package as IoPackage);
+            var uasset = UAssetUtils.CreateUAsset(package);
             var packagePath = Path.Combine(package.Name.Split('/'));
             string json = uasset.Serialize();
             string exportFilePath = Path.Combine(_exportDirectory, Path.ChangeExtension(packagePath, ".json"));

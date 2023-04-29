@@ -6,7 +6,7 @@ namespace CUE4Parse2UEAT.Generation
 {
     public static class UObjectUtils
     {
-        public readonly static List<IUObjectFactory> UObjectFactories = new List<IUObjectFactory>()
+        private readonly static List<IUObjectFactory> UObjectFactories = new List<IUObjectFactory>()
         {
             new UBlueprintFactory(),
             new UWidgetBlueprintFactory(),

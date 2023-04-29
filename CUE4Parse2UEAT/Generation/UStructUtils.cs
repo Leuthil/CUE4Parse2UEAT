@@ -7,7 +7,7 @@ namespace CUE4Parse2UEAT.Generation
         public static void PopulateUStructData(CUE4Parse.UE4.Objects.UObject.UStruct cue4ParseUStruct,
             UEATSerializer.UEAT.UStruct ueatUStruct, IPackageObjectFactory packageObjectFactory)
         {
-            ueatUStruct.SuperStruct = packageObjectFactory.CreatePackageObject(cue4ParseUStruct.SuperStruct?.ResolvedObject?.Load());
+            ueatUStruct.SuperStruct = packageObjectFactory.CreatePackageObject(cue4ParseUStruct.SuperStruct);
 
             foreach (var child in cue4ParseUStruct.Children)
             {

@@ -8,7 +8,7 @@ namespace CUE4Parse2UEAT.Generation
             UEATSerializer.UEAT.UClass ueatUClass, IPackageObjectFactory packageObjectFactory)
         {
             ueatUClass.ClassFlags = cue4ParseUClass.ClassFlags;
-            ueatUClass.ClassWithin = packageObjectFactory.CreatePackageObject(cue4ParseUClass.ClassWithin?.ResolvedObject?.Load());
+            ueatUClass.ClassWithin = packageObjectFactory.CreatePackageObject(cue4ParseUClass.ClassWithin);
             ueatUClass.ClassConfigName = cue4ParseUClass.ClassConfigName.Text;
 
             foreach (var implInterface in cue4ParseUClass.Interfaces)
@@ -20,14 +20,14 @@ namespace CUE4Parse2UEAT.Generation
 
                 var implementedInterface = new UEATSerializer.UEAT.FImplementedInterface();
 
-                implementedInterface.Class = packageObjectFactory.CreatePackageObject(implInterface.Class?.ResolvedObject?.Load());
+                implementedInterface.Class = packageObjectFactory.CreatePackageObject(implInterface.Class);
                 implementedInterface.PointerOffset = implInterface.PointerOffset;
                 implementedInterface.bImplementedByK2 = implInterface.bImplementedByK2;
 
                 ueatUClass.Interfaces.Add(implementedInterface);
             }
 
-            ueatUClass.ClassDefaultObject = packageObjectFactory.CreatePackageObject(cue4ParseUClass.ClassDefaultObject?.ResolvedObject?.Load());
+            ueatUClass.ClassDefaultObject = packageObjectFactory.CreatePackageObject(cue4ParseUClass.ClassDefaultObject);
         }
     }
 }

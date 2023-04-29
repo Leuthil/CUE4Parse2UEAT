@@ -75,6 +75,8 @@ namespace CUE4Parse2UEAT.Factory
                 }
             });
 
+            /*
+             * BoundObjectProperty is always empty so this actually just causes problems
             foreach (var export in context.Package.GetExports().Where(e => "MovieSceneEventTriggerSection".Equals(e?.Class?.Name)))
             {
                 if (UObjectUtils.GetPropertyValue<StructProperty>(export, "EventChannel")?.Value?.StructType is not IPropertyHolder eventChannel)
@@ -112,6 +114,7 @@ namespace CUE4Parse2UEAT.Factory
                     eventSection.Functions.Add(movieSceneEvent);
                 }
             }
+            */
 
             // add named slots as variable names?
             // add "bindings" as variable names? Is it DynamicBindingObjects property?

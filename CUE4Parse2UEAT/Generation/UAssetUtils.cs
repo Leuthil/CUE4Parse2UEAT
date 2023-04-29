@@ -1,7 +1,7 @@
 using CUE4Parse.UE4.Assets;
 using CUE4Parse.Utils;
+using CUE4Parse2UEAT.Factory;
 using UEATSerializer.UEAT;
-using UObject = CUE4Parse.UE4.Assets.Exports.UObject;
 
 namespace CUE4Parse2UEAT.Generation
 {
@@ -15,24 +15,43 @@ namespace CUE4Parse2UEAT.Generation
             }
 
             var assetObject = FindAssetObject(assetPackage);
-            var context = new GenerationContext(assetPackage, assetObject);
+
+            if (assetObject == null)
+            {
+                return null;
+            }
+
+            var packageObjectRepository = new PackageObjectRepository();
+            var packageObjectFactory = CreatePackageObjectFactory(assetPackage, packageObjectRepository);
+
+            if (packageObjectFactory == null)
+            {
+                return null;
+            }
+
+            var context = new GenerationContext(assetPackage, assetObject, packageObjectRepository, packageObjectFactory);
 
             var uasset = new UAsset();
             uasset.PackageName = assetPackage.Name;
-            uasset.ObjectName = assetObject.Name;
             uasset.ClassName = GetAssetClassName(assetObject);
+            uasset.ObjectName = uasset.ClassName.EndsWith("Blueprint") ? assetObject.Name.SubstringBeforeLast("_C") : assetObject.Name;
             uasset.UObjectAsset = UObjectUtils.CreateUObject(assetObject, context);
 
-            assetPackage.GetExports().Select(e => context.PackageObjectFactory.CreatePackageObject(e));
-
+            context.PackageObjectFactory.ProcessImports(assetPackage);
+            context.PackageObjectFactory.ProcessExports(assetPackage);
             uasset.ImportPackageObjects = context.PackageObjectRepository.PackageObjects.Where(p => p is ImportPackageObject);
             uasset.ExportPackageObjects = context.PackageObjectRepository.PackageObjects.Where(p => p is ExportPackageObject);
 
             return uasset;
         }
 
-        public static UObject? FindAssetObject(IPackage package)
+        public static CUE4Parse.UE4.Assets.Exports.UObject? FindAssetObject(IPackage package)
         {
+            if (package == null)
+            {
+                return null;
+            }
+
             var name = package.Name.SubstringAfterLast('/');
             var uobject = package.GetExportOrNull(name);
 
@@ -51,7 +70,7 @@ namespace CUE4Parse2UEAT.Generation
             { "AnimBlueprintGeneratedClass" , "AnimBlueprint"},
         };
 
-        public static string GetAssetClassName(UObject uobject)
+        public static string GetAssetClassName(CUE4Parse.UE4.Assets.Exports.UObject uobject)
         {
             string? className = uobject?.Class?.Name;
 
@@ -66,6 +85,16 @@ namespace CUE4Parse2UEAT.Generation
             }
 
             return className;
+        }
+
+        private static IPackageObjectFactory? CreatePackageObjectFactory(IPackage package, PackageObjectRepository packageObjectRepository)
+        {
+            if (package is IoPackage ioPackage)
+            {
+                return new IoPackageObjectFactory(ioPackage, packageObjectRepository);
+            }
+
+            return null;
         }
     }
 }
