@@ -1,6 +1,7 @@
 ﻿using CUE4Parse.UE4.Assets.Objects;
 using CUE4Parse.UE4.Objects.Core.Misc;
 using CUE4Parse2UEAT.Factory;
+using UEATSerializer.UE;
 using UEATSerializer.UEAT;
 
 namespace CUE4Parse2UEAT.Generation
@@ -124,6 +125,10 @@ namespace CUE4Parse2UEAT.Generation
                             FDateTimeStructPropertyValue dateTimeStructProp = new FDateTimeStructPropertyValue();
                             dateTimeStructProp.Ticks = (ulong)dateTimeStructProperty.Ticks;
                             return dateTimeStructProp;
+                        case CUE4Parse.UE4.Objects.Core.Misc.FGuid guidProperty:
+                            UEATSerializer.UEAT.FGuidPropertyValue guidProp = new UEATSerializer.UEAT.FGuidPropertyValue(
+                                guidProperty.A, guidProperty.B, guidProperty.C, guidProperty.D);
+                            return guidProp;
                         case FStructFallback fallbackStructProperty:
                             FFallbackStructPropertyValue fallbackStructProp = new FFallbackStructPropertyValue();
                             foreach (var fallbackStructInnerProperty in fallbackStructProperty.Properties)
