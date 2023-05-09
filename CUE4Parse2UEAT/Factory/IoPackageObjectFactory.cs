@@ -200,7 +200,7 @@ namespace CUE4Parse2UEAT.Factory
 
             packageObject.ClassPackage = "/Script/CoreUObject";
             packageObject.ClassName = "Package";
-            
+
             // packageObject.Outer intentionally left null
 
             return packageObject;

@@ -1,7 +1,6 @@
 ﻿using CUE4Parse.UE4.Assets.Objects;
 using CUE4Parse.UE4.Objects.Core.Misc;
 using CUE4Parse2UEAT.Factory;
-using UEATSerializer.UE;
 using UEATSerializer.UEAT;
 
 namespace CUE4Parse2UEAT.Generation
@@ -10,6 +9,11 @@ namespace CUE4Parse2UEAT.Generation
     {
         public static FPropertyValue? CreateFPropertyValue(FPropertyTagType propertyTagType, IPackageObjectFactory packageObjectFactory)
         {
+            if (propertyTagType == null)
+            {
+                return null;
+            }
+
             switch (propertyTagType)
             {
                 case ArrayProperty arrayProperty:
