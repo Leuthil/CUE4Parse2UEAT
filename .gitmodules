@@ -1,7 +1,3 @@
-[submodule "CUE4Parse"]
-	path = CUE4Parse
-	url = https://github.com/LongerWarrior/CUE4Parse
-    branch = HogwartsLegacy
 [submodule "UEATSerializer"]
 	path = UEATSerializer
 	url = https://github.com/Leuthil/UEATSerializer.git
