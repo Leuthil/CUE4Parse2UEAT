@@ -13,9 +13,7 @@ namespace CUE4Parse2UEAT.Factory
 
         public UEATSerializer.UEAT.UObject? CreateUObject(CUE4Parse.UE4.Assets.Exports.UObject? assetObject, GenerationContext context)
         {
-            var blueprintGenClass = assetObject as CUE4Parse.UE4.Objects.Engine.UBlueprintGeneratedClass;
-
-            if (blueprintGenClass == null)
+            if (assetObject is not CUE4Parse.UE4.Objects.Engine.UBlueprintGeneratedClass blueprintGenClass)
             {
                 return null;
             }

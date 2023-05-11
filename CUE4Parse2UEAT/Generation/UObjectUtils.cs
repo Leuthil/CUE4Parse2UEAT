@@ -11,6 +11,8 @@ namespace CUE4Parse2UEAT.Generation
             new UBlueprintFactory(),
             new UWidgetBlueprintFactory(),
             new UUserDefinedStructFactory(),
+            new UUserDefinedEnumFactory(),
+            new UTexture2DFactory(),
         };
 
         public static UEATSerializer.UEAT.UObject? CreateUObject(CUE4Parse.UE4.Assets.Exports.UObject? assetObject, GenerationContext context)
