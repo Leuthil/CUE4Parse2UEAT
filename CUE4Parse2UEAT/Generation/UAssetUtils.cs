@@ -37,6 +37,11 @@ namespace CUE4Parse2UEAT.Generation
             uasset.ObjectName = uasset.ClassName.EndsWith("Blueprint") ? assetObject.Name.SubstringBeforeLast("_C") : assetObject.Name;
             uasset.UObjectAsset = UObjectUtils.CreateUObject(assetObject, context);
 
+            if (uasset.UObjectAsset == null)
+            {
+                return null;
+            }
+
             context.PackageObjectFactory.ProcessImports(assetPackage);
             context.PackageObjectFactory.ProcessExports(assetPackage);
             uasset.ImportPackageObjects = context.PackageObjectRepository.PackageObjects.Where(p => p is ImportPackageObject);
